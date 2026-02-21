@@ -1,3 +1,75 @@
+import { LoginComponent } from './core/auth/components/login/login.component';
+import { RegisterComponent } from './core/auth/components/register/register.component';
+import { ChangPasswordComponent } from './features/chang-password/chang-password.component';
+import { FeedComponent } from './features/feed/feed.component';
+import { HomeComponent } from './features/home/home.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'auth',
+    pathMatch: 'full',
+  },
+  {
+    path: 'auth',
+    component: AuthLayoutComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full',
+      },
+      {
+        path: 'login',
+        component: LoginComponent,
+        title: 'Login',
+      },
+      {
+        path: 'register',
+        component: RegisterComponent,
+        title: 'Register',
+      },
+    ],
+  },
+  {
+    path: 'main',
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+      {
+        path: 'home',
+        component: HomeComponent,
+        title: 'Home',
+      },
+      {
+        path: 'feed',
+        component: FeedComponent,
+        title: 'Feed',
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        title: 'Profile',
+      },
+      {
+        path: 'changePassword',
+        component: ChangPasswordComponent,
+        title: 'Change Password',
+      },
+    ],
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
+    title: 'Not Found',
+  },
+];

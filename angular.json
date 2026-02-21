@@ -8,7 +8,26 @@
   "projects": {
     "socialMedia": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+          "@schematics/angular:component": {
+            "type": "component"
+          },
+          "@schematics/angular:directive": {
+            "type": "directive"
+          },
+          "@schematics/angular:pipe": {
+            "type": "pipe"
+          },
+          "@schematics/angular:guard": {
+            "type": "guard"
+          },
+          "@schematics/angular:interface": {
+            "type": "interface"
+          },
+          "@schematics/angular:service": {
+            "type": "service"
+          }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -25,6 +44,7 @@
               }
             ],
             "styles": [
+              "./node_modules//@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
             ]
           },
