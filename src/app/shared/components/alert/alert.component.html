@@ -1,0 +1,62 @@
+<div [class]="alertClasses" role="alert">
+  <svg
+    class="w-4 h-4 me-2 shrink-0 mt-0.5"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    @switch (type) {
+      @case ('danger') {
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      }
+      @case ('success') {
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      }
+      @case ('warning') {
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+        />
+      }
+      @default {
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      }
+    }
+  </svg>
+
+  <span class="sr-only">{{ type }}</span>
+
+  <div>
+    @if (title) {
+      <span class="font-medium">{{ title }}</span>
+    }
+
+    @if (items && items.length > 0) {
+      <ul class="mt-2 list-disc list-outside space-y-1 ps-2.5 text-sm">
+        @for (item of items; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    }
+
+    @if (message) {
+      <p class="mt-1 text-sm">{{ message }}</p>
+    }
+  </div>
+</div>

@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: var(-color-secondary);
+  background-color: var(--color-secondary);
   color: var(--color-main);
   font-family: 'SN Pro', sans-serif;
   font-optical-sizing: auto;
