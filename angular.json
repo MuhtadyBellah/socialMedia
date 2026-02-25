@@ -12,15 +12,6 @@
           "@schematics/angular:component": {
             "type": "component"
           },
-          "@schematics/angular:directive": {
-            "type": "directive"
-          },
-          "@schematics/angular:pipe": {
-            "type": "pipe"
-          },
-          "@schematics/angular:guard": {
-            "type": "guard"
-          },
           "@schematics/angular:interface": {
             "type": "interface"
           },
@@ -44,7 +35,8 @@
               }
             ],
             "styles": [
-              "./node_modules//@fortawesome/fontawesome-free/css/all.min.css",
+              "./node_modules/flowbite/dist/flowbite.min.css",
+              "./node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
             ]
           },
