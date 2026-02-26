@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,8 +7,16 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { initFlowbite } from 'flowbite';
+
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
+import { AuthService } from '../../services/auth.service';
+
+const PATTERNS = {
+  PASSWORD: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
+  PHONE_EG: /^01[0125]\d{8}$/,
+};
 
 @Component({
   selector: 'app-register',
@@ -17,9 +25,12 @@ import { AlertComponent } from '../../../../shared/components/alert/alert.compon
   styleUrl: './register.component.css',
 })
 export class RegisterComponent implements OnInit, AfterViewInit {
-  constructor(private formBuild: FormBuilder) {}
-  isSubmitted = false;
+  private readonly formBuild = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+
   registerForm!: FormGroup;
+  isSubmitted = false;
 
   private readonly validationMessages: Record<string, Record<string, string>> = {
     name: { required: 'Full name is required.' },
@@ -32,7 +43,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       minlength: 'Password must be at least 8 characters long.',
       pattern: 'Password must contain uppercase, lowercase, number, and special character.',
     },
-    confirmPassword: {
+    rePassword: {
       required: 'Please confirm your password.',
       mismatch: 'Passwords do not match.',
     },
@@ -42,22 +53,48 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     terms: { required: 'You must agree to the Terms and Conditions.' },
   };
 
+  ngOnInit(): void {
+    this.registerForm = this.formBuild.group(
+      {
+        name: ['', Validators.required],
+        username: [''],
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [Validators.required, Validators.minLength(8), Validators.pattern(PATTERNS.PASSWORD)],
+        ],
+        rePassword: ['', Validators.required],
+        gender: [''],
+        dateOfBirth: [''],
+        phone: ['', [Validators.pattern(PATTERNS.PHONE_EG)]],
+        country: [''],
+        terms: [false, Validators.requiredTrue],
+      },
+      { validators: this.passwordMatchValidator },
+    );
+  }
+
+  ngAfterViewInit(): void {
+    initFlowbite();
+  }
+
   private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
+    const rePassword = group.get('rePassword')?.value;
 
-    if (!password || !confirmPassword) return null;
+    if (!password || !rePassword) return null;
 
-    return password === confirmPassword ? null : { mismatch: true };
+    return password === rePassword ? null : { mismatch: true };
   }
 
   get formErrors(): string[] {
     const errors: string[] = [];
+    if (!this.registerForm) return errors;
 
     if (this.registerForm.hasError('mismatch')) {
-      const confirmCtrl = this.registerForm.get('confirmPassword');
+      const confirmCtrl = this.registerForm.get('rePassword');
       if (confirmCtrl?.touched || confirmCtrl?.dirty || this.isSubmitted) {
-        errors.push(this.validationMessages['confirmPassword']['mismatch']);
+        errors.push(this.validationMessages['rePassword']['mismatch']);
       }
     }
 
@@ -76,40 +113,27 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(): void {
-    this.isSubmitted = true;
-
     if (this.registerForm.valid) {
-      console.log('Form Submitted successfully', this.registerForm.value);
+      this.isSubmitted = true;
+      const email = this.registerForm.get('email')?.value;
+      this.registerForm.get('username')?.setValue(email.split('@')[0] || '');
+
+      const { phone, country, terms, ...registerData } = this.registerForm.value;
+      this.authService
+        .postRegister(registerData)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            console.log('Registration successful:', response);
+            this.registerForm.reset();
+            this.isSubmitted = false;
+          },
+          error: (error) => {
+            console.error('Registration failed:', error);
+          },
+        });
     } else {
       this.registerForm.markAllAsTouched();
     }
-  }
-
-  ngOnInit(): void {
-    this.registerForm = this.formBuild.group(
-      {
-        name: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/),
-          ],
-        ],
-        confirmPassword: ['', Validators.required],
-        phone: ['', [Validators.pattern(/^01[0125]\d{8}$/)]],
-        gender: [''],
-        dob: [''],
-        country: [''],
-        terms: [false, Validators.requiredTrue],
-      },
-      { validators: this.passwordMatchValidator },
-    );
-  }
-
-  ngAfterViewInit(): void {
-    initFlowbite();
   }
 }
