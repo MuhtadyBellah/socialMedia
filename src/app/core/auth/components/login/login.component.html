@@ -54,25 +54,28 @@
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
           ></path>
         </svg>
+
         <input
           [type]="showPassword ? 'text' : 'password'"
           id="password"
           formControlName="password"
-          class="block py-2.5 pl-8 pr-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          class="block py-2.5 pl-8 pr-10 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
         />
 
-        <span
-          class="absolute right-0 top-1/2 transform -translate-y-1/2 pr-3 cursor-pointer text-gray-600"
-          (click)="togglePasswordVisibility()"
-        >
-          <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-        </span>
         <label
           for="password"
           class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
           >Password</label
         >
+
+        <button
+          type="button"
+          class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none"
+          (click)="togglePasswordVisibility()"
+        >
+          <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
       </div>
 
       <div class="flex items-center justify-between mb-8 mt-2">

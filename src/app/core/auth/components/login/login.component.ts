@@ -36,30 +36,32 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     this.errorMessage = '';
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      const { email, password } = this.loginForm.value;
+    this.isLoading = true;
 
-      this.authService
-        .postLogin({ email, password })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (response) => {
-            this.isLoading = false;
-            console.log('Login successful', response);
-            if (response.token) {
-              localStorage.setItem('authToken', response.token);
-            }
-            this.router.navigate(['/main/home']);
-          },
-          error: (error) => {
-            this.isLoading = false;
-            this.errorMessage = 'Invalid email or password. Please try again.';
-          },
-        });
-    } else {
+    if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      this.isLoading = false;
+      return;
     }
+
+    const { email, password } = this.loginForm.value;
+    this.authService
+      .postLogin({ email, password })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          console.log('Login successful', response);
+          if (response.token) {
+            localStorage.setItem('authToken', response.token);
+          }
+          this.router.navigate(['/main/home']);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = 'Invalid email or password. Please try again.';
+        },
+      });
   }
 
   togglePasswordVisibility(): void {

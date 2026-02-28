@@ -118,33 +118,36 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.isSubmitted = true;
-      const email = this.registerForm.get('email')?.value;
-      this.registerForm.get('username')?.setValue(email.split('@')[0] || '');
+    this.errorMessage = '';
+    this.isSubmitted = true;
 
-      const { phone, country, terms, ...registerData } = this.registerForm.value;
-      this.authService
-        .postRegister(registerData)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (response) => {
-            console.log('Registration successful:', response);
-            this.registerForm.reset();
-            this.errorMessage = '';
-            this.isSubmitted = false;
-            this.router.navigate(['/auth/login']);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.errorMessage =
-              error.error?.message || 'An error occurred during registration. Please try again.';
-            this.isSubmitted = false;
-          },
-        });
-    } else {
+    if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       this.isSubmitted = false;
+      return;
     }
+
+    const email = this.registerForm.get('email')?.value;
+    this.registerForm.get('username')?.setValue(email.split('@')[0] || '');
+
+    const { phone, country, terms, ...registerData } = this.registerForm.value;
+    this.authService
+      .postRegister(registerData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          console.log('Registration successful:', response);
+          this.registerForm.reset();
+          this.errorMessage = '';
+          this.isSubmitted = false;
+          this.router.navigate(['/auth/login']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMessage =
+            error.error?.message || 'An error occurred during registration. Please try again.';
+          this.isSubmitted = false;
+        },
+      });
   }
 
   togglePasswordVisibility(): void {
