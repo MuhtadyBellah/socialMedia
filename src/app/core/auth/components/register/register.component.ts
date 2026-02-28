@@ -37,6 +37,10 @@ export class RegisterComponent implements OnInit {
   isSubmitted = false;
   errorMessage = '';
 
+  // controls whether password inputs are visible
+  showPassword = false;
+  showRePassword = false;
+
   private readonly validationMessages: Record<string, Record<string, string>> = {
     name: { required: 'Full name is required.' },
     email: {
@@ -126,11 +130,10 @@ export class RegisterComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log('Registration successful:', response);
-            this.router.navigate(['/auth/login']);
-
             this.registerForm.reset();
             this.errorMessage = '';
             this.isSubmitted = false;
+            this.router.navigate(['/auth/login']);
           },
           error: (error: HttpErrorResponse) => {
             this.errorMessage =
@@ -140,6 +143,15 @@ export class RegisterComponent implements OnInit {
         });
     } else {
       this.registerForm.markAllAsTouched();
+      this.isSubmitted = false;
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleRePasswordVisibility(): void {
+    this.showRePassword = !this.showRePassword;
   }
 }

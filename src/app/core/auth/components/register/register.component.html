@@ -184,12 +184,18 @@
         </svg>
         <div class="relative z-0 w-full group">
           <input
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             id="password"
             formControlName="password"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
             placeholder=" "
           />
+          <span
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 pr-3 cursor-pointer text-gray-600"
+            (click)="togglePasswordVisibility()"
+          >
+            <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </span>
           <label
             for="password"
             class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
@@ -214,12 +220,18 @@
         </svg>
         <div class="relative z-0 w-full group">
           <input
-            type="password"
+            [type]="showRePassword ? 'text' : 'password'"
             id="rePassword"
             formControlName="rePassword"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
             placeholder=" "
           />
+          <span
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 pr-3 cursor-pointer text-gray-600"
+            (click)="toggleRePasswordVisibility()"
+          >
+            <i class="fas" [ngClass]="showRePassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </span>
           <label
             for="rePassword"
             class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
@@ -275,13 +287,13 @@
       </div>
 
       <button
-        [disabled]="isSubmitted"
+        [disabled]="isSubmitted || registerForm.invalid"
         type="submit"
         class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3.5 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
       >
         @if (isSubmitted) {
           Creating Account...
-          <i class="animate-spin -ml-1 mr-3 h-5 w-5 text-white fas fa-spinner"></i>
+          <i class="animate-spin text-white fas fa-spinner"></i>
         } @else {
           Register Account
         }
