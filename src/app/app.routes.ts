@@ -1,5 +1,6 @@
 import { LoginComponent } from './core/auth/components/login/login.component';
 import { RegisterComponent } from './core/auth/components/register/register.component';
+import { authGuard } from './core/guards/auth-guard';
 import { ChangPasswordComponent } from './features/chang-password/chang-password.component';
 import { FeedComponent } from './features/feed/feed.component';
 import { HomeComponent } from './features/home/home.component';
@@ -39,6 +40,7 @@ export const routes: Routes = [
   {
     path: 'main',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',

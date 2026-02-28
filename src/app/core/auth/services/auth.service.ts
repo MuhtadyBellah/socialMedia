@@ -2,16 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-
-export interface AuthResponse {
-  message: string;
-  token?: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}
+import { AuthResponse } from '../models/auth.interface';
 
 @Injectable({
   providedIn: 'root',
