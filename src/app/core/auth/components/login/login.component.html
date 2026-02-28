@@ -1,1 +1,107 @@
-<p>login works!</p>
+<section
+  class="bg-gray-200 p-6 md:p-8 shadow-lg rounded-xl w-full max-w-md mx-auto my-10 border border-gray-200"
+>
+  <div class="container mx-auto p-6 rounded-lg">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+      <p class="text-gray-500 text-sm">Please sign in to your account.</p>
+    </div>
+
+    @if (errorMessage) {
+      <app-alert type="danger" title="Login Failed:" [message]="errorMessage"></app-alert>
+    }
+
+    <form class="w-full mt-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="relative z-0 w-full mb-6 group">
+        <svg
+          class="absolute top-3 left-0 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          ></path>
+        </svg>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="block py-2.5 pl-8 pr-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" "
+        />
+        <label
+          for="email"
+          class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+          >Email Address</label
+        >
+      </div>
+
+      <div class="relative z-0 w-full mb-6 group">
+        <svg
+          class="absolute top-3 left-0 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          ></path>
+        </svg>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="block py-2.5 pl-8 pr-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" "
+        />
+        <label
+          for="password"
+          class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+          >Password</label
+        >
+      </div>
+
+      <div class="flex items-center justify-between mb-8 mt-2">
+        <div class="flex items-center h-5">
+          <input
+            id="remember"
+            type="checkbox"
+            formControlName="rememberMe"
+            class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 cursor-pointer"
+          />
+          <label for="remember" class="ml-2 text-sm font-medium text-gray-600 cursor-pointer"
+            >Remember me</label
+          >
+        </div>
+        <a href="#" class="text-sm font-medium text-blue-600 hover:underline">Forgot password?</a>
+      </div>
+
+      <button
+        [disabled]="isLoading"
+        type="submit"
+        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+      >
+        @if (isLoading) {
+          Signing In...
+          <i class="animate-spin text-white fas fa-spinner"></i>
+        } @else {
+          Sign In
+        }
+      </button>
+
+      <p class="text-sm text-center text-gray-500 mt-6">
+        Don't have an account yet?
+        <a routerLink="/auth/register" class="font-medium text-blue-600 hover:underline"
+          >Register here</a
+        >
+      </p>
+    </form>
+  </div>
+</section>

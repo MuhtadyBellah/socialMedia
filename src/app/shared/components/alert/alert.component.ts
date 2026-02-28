@@ -9,7 +9,7 @@ import { Component, input, Input } from '@angular/core';
 export class AlertComponent {
   @Input({ required: true }) type: 'info' | 'danger' | 'success' | 'warning' = 'danger';
   @Input() title?: string = '';
-  @Input() message?: string[] = [];
+  @Input() message?: string = '';
   @Input() items?: string[] = [];
 
   public get alertClasses(): string {

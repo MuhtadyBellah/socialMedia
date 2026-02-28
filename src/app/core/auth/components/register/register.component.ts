@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,11 +7,14 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { initFlowbite } from 'flowbite';
 
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { AuthService } from '../../services/auth.service';
+import { ErrorResponse } from '../../models/auth.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 const PATTERNS = {
   PASSWORD: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
@@ -20,17 +23,19 @@ const PATTERNS = {
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, AlertComponent],
+  imports: [ReactiveFormsModule, AlertComponent, RouterLink, CommonModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit, AfterViewInit {
+export class RegisterComponent implements OnInit {
   private readonly formBuild = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   registerForm!: FormGroup;
   isSubmitted = false;
+  errorMessage = '';
 
   private readonly validationMessages: Record<string, Record<string, string>> = {
     name: { required: 'Full name is required.' },
@@ -72,10 +77,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       },
       { validators: this.passwordMatchValidator },
     );
-  }
-
-  ngAfterViewInit(): void {
-    initFlowbite();
   }
 
   private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
@@ -125,11 +126,16 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         .subscribe({
           next: (response) => {
             console.log('Registration successful:', response);
+            this.router.navigate(['/auth/login']);
+
             this.registerForm.reset();
+            this.errorMessage = '';
             this.isSubmitted = false;
           },
-          error: (error) => {
-            console.error('Registration failed:', error);
+          error: (error: HttpErrorResponse) => {
+            this.errorMessage =
+              error.error?.message || 'An error occurred during registration. Please try again.';
+            this.isSubmitted = false;
           },
         });
     } else {

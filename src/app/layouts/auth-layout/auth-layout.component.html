@@ -4,7 +4,7 @@
     style="font-family: Cairo, sans-serif"
   >
     <div
-      class="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between"
+      class="mx-auto flex max-w-6xl flex-col items-center gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between"
     >
       <section class="order-2 w-full max-w-xl text-center lg:order-1 lg:text-left">
         <h1 class="hidden text-5xl font-extrabold tracking-tight text-main sm:text-6xl lg:block">
@@ -56,7 +56,7 @@
           </div>
         </div>
       </section>
-      <section class="order-1 w-full max-w-107.5 lg:order-2">
+      <section class="order-1 w-full max-w-lg lg:order-2">
         <div class="rounded-2xl bg-white p-4 sm:p-6">
           <div class="mb-4 text-center lg:hidden">
             <h1 class="text-3xl font-extrabold tracking-tight text-main">Route Posts</h1>
@@ -68,11 +68,9 @@
             <button
               type="button"
               class="rounded-lg py-2 text-sm font-extrabold transition"
-              [ngClass]="
-                isActive ? 'bg-white text-main shadow-sm' : 'text-slate-600 hover:text-slate-800'
-              "
               routerLink="login"
-              (click)="isActive = true"
+              routerLinkActive="bg-white text-main shadow-sm"
+              [ngClass]="{ 'text-slate-600 hover:text-slate-800': !isLoginActive() }"
             >
               Login
             </button>
@@ -80,11 +78,9 @@
             <button
               type="button"
               class="rounded-lg py-2 text-sm font-extrabold transition"
-              [ngClass]="
-                !isActive ? 'bg-white text-main shadow-sm' : 'text-slate-600 hover:text-slate-800'
-              "
               routerLink="register"
-              (click)="isActive = false"
+              routerLinkActive="bg-white text-main shadow-sm"
+              [ngClass]="{ 'text-slate-600 hover:text-slate-800': isLoginActive() }"
             >
               Register
             </button>

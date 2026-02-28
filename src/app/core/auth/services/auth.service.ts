@@ -1,19 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment.development';
 
-const API_URL = 'https://route-posts.routemisr.com/';
+export interface AuthResponse {
+  message: string;
+  token?: string;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly httpClient = inject(HttpClient);
 
-  postRegister(data: Object): Observable<any> {
-    return this.httpClient.post<any>(API_URL + 'users/signup', data);
+  postRegister(data: object): Observable<AuthResponse> {
+    return this.httpClient.post<AuthResponse>(environment.baseURL + 'users/signup', data);
   }
 
-  postLogin(data: Object): Observable<any> {
-    return this.httpClient.post<any>(API_URL + 'users/signin', data);
+  postLogin(data: object): Observable<AuthResponse> {
+    return this.httpClient.post<AuthResponse>(environment.baseURL + 'users/signin', data);
   }
 }

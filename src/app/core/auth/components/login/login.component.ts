@@ -1,11 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [AlertComponent, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  private readonly formBuild = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
+  loginForm!: FormGroup;
+  isLoading = false;
+  errorMessage = '';
+
+  ngOnInit(): void {
+    this.loginForm = this.formBuild.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      rememberMe: [false],
+    });
+  }
+
+  onSubmit(): void {
+    this.errorMessage = '';
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      const { email, password } = this.loginForm.value;
+
+      this.authService
+        .postLogin({ email, password })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            console.log('Login successful', response);
+            if (response.token) {
+              localStorage.setItem('authToken', response.token);
+            }
+            this.router.navigate(['/main/home']);
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.errorMessage = 'Invalid email or password. Please try again.';
+          },
+        });
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
+  }
 }
