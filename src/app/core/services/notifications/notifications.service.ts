@@ -1,35 +1,32 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { ApiService } from '../api.service';
 import { DefaultResponse } from '../../models/default.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationsService {
-  private readonly httpClient = inject(HttpClient);
+  private readonly api = inject(ApiService);
 
-  getNotifications(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'notifications', {
-      params: { unread: false, page: 1, limit: 10, data },
+  getNotifications(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('notifications', {
+      unread: false,
+      page: 1,
+      limit: 10,
+      ...params,
     });
   }
 
-  getUnreadCount(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'notifications/unread-count', {
-      params: { data },
-    });
+  getUnreadCount(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('notifications/unread-count', params);
   }
 
   patchMarkNotification(notificationId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.patch<any>(
-      environment.baseURL + `notifications/${notificationId}/read`,
-      data,
-    );
+    return this.api.patch<DefaultResponse>(`notifications/${notificationId}/read`, data);
   }
 
   patchMarkAll(data: object): Observable<DefaultResponse> {
-    return this.httpClient.patch<any>(environment.baseURL + 'notifications/read-all', data);
+    return this.api.patch<DefaultResponse>('notifications/read-all', data);
   }
 }

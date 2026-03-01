@@ -1,7 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { ApiService } from '../../services/api.service';
 import { AuthResponse } from '../models/auth.interface';
 import { DefaultResponse } from '../../models/default.interface';
 
@@ -9,25 +8,14 @@ import { DefaultResponse } from '../../models/default.interface';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly httpClient = inject(HttpClient);
-
-  private getHeaders(): HttpHeaders {
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-    const token = localStorage.getItem('userToken');
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return headers;
-  }
+  private readonly api = inject(ApiService);
 
   postRegister(data: object): Observable<AuthResponse> {
-    return this.httpClient.post<AuthResponse>(environment.baseURL + 'users/signup', data);
+    return this.api.post<AuthResponse>('users/signup', data);
   }
 
   postLogin(data: object): Observable<AuthResponse> {
-    return this.httpClient.post<AuthResponse>(environment.baseURL + 'users/signin', data);
+    return this.api.post<AuthResponse>('users/signin', data);
   }
 
   /*
@@ -37,49 +25,30 @@ export class AuthService {
     }
   */
   patchChangePassword(data: object): Observable<DefaultResponse> {
-    return this.httpClient.patch<any>(environment.baseURL + 'users/change-password', data, {
-      headers: this.getHeaders(),
-    });
+    return this.api.patch<DefaultResponse>('users/change-password', data);
   }
 
-  getProfileData(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'users/profile-data', {
-      headers: this.getHeaders(),
-      params: data,
-    });
+  getProfileData(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('users/profile-data', params);
   }
 
-  getBookmarks(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'users/bookmarks', {
-      headers: this.getHeaders(),
-      params: data,
-    });
+  getBookmarks(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('users/bookmarks', params);
   }
 
-  getFollowSuggestions(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'users/suggestions', {
-      headers: this.getHeaders(),
-      params: { limit: 10, data },
-    });
+  getFollowSuggestions(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('users/suggestions', { limit: 10, ...params });
   }
 
-  getUserProfile(userId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + `users/${userId}/profile`, {
-      headers: this.getHeaders(),
-      params: { data },
-    });
+  getUserProfile(userId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`users/${userId}/profile`, params);
   }
 
   putFollow(userId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(environment.baseURL + `users/${userId}/follow`, data, {
-      headers: this.getHeaders(),
-    });
+    return this.api.put<DefaultResponse>(`users/${userId}/follow`, data);
   }
 
-  getUserPosts(userId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + `users/${userId}/posts`, {
-      headers: this.getHeaders(),
-      params: { data },
-    });
+  getUserPosts(userId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`users/${userId}/posts`, params);
   }
 }

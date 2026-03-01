@@ -8,7 +8,8 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
     if (
       req.url.includes('posts') ||
       req.url.includes('comments') ||
-      req.url.includes('notifications')
+      req.url.includes('notifications') ||
+      (req.url.includes('users') && !req.url.includes('/signup') && !req.url.includes('/signin'))
     ) {
       req = req.clone({
         setHeaders: {

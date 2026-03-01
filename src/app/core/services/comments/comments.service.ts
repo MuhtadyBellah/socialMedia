@@ -1,101 +1,77 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { ApiService } from '../api.service';
 import { DefaultResponse } from '../../models/default.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommentsService {
-  private readonly httpClient = inject(HttpClient);
+  private readonly api = inject(ApiService);
 
-  getPostComments(postId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + `posts/${postId}/comments`, {
-      params: { page: 1, limit: 10, data },
+  getPostComments(postId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`posts/${postId}/comments`, {
+      page: 1,
+      limit: 10,
+      ...params,
     });
   }
 
   /**
-   * 
-   * @param data 
-   * Body formdata
-      content     Nice post @ahmed_ali
-      image
-   * @returns 
+   * Create a comment on a post
+   * @param postId The post ID
+   * @param data FormData with content (supports @mentions) and optional image
    */
   postComment(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.post<any>(environment.baseURL + `posts/${postId}/comments`, data);
+    return this.api.post<DefaultResponse>(`posts/${postId}/comments`, data);
   }
 
-  getCommentReplies(postId: string, commentId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(
-      environment.baseURL + `posts/${postId}/comments/${commentId}/replies`,
-      {
-        params: { page: 1, limit: 10, data },
-      },
-    );
+  getCommentReplies(postId: string, commentId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`posts/${postId}/comments/${commentId}/replies`, {
+      page: 1,
+      limit: 10,
+      ...params,
+    });
   }
 
   /**
-   * 
-   * @param data 
-   * Body formdata
-      content     Reply with mention @mentor_user
-      image
-   * @returns 
+   * Create a reply to a comment
+   * @param postId The post ID
+   * @param commentId The comment ID
+   * @param data FormData with content and optional image
    */
   postReply(postId: string, commentId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.post<any>(
-      environment.baseURL + `posts/${postId}/comments/${commentId}/replies`,
-      data,
-    );
+    return this.api.post<DefaultResponse>(`posts/${postId}/comments/${commentId}/replies`, data);
   }
 
   /**
-   * 
-   * @param data 
-   * Body formdata
-      content     Updated comment text
-      image
-   * @returns 
+   * Update a comment
+   * @param postId The post ID
+   * @param commentId The comment ID
+   * @param data FormData with updated content and optional image
    */
   putComment(postId: string, commentId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(
-      environment.baseURL + `posts/${postId}/comments/${commentId}`,
-      data,
-    );
+    return this.api.put<DefaultResponse>(`posts/${postId}/comments/${commentId}`, data);
   }
 
-  deleteComment(postId: string, commentId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.delete<any>(
-      environment.baseURL + `posts/${postId}/comments/${commentId}`,
-      {
-        params: { data },
-      },
-    );
+  deleteComment(postId: string, commentId: string): Observable<DefaultResponse> {
+    return this.api.delete<DefaultResponse>(`posts/${postId}/comments/${commentId}`);
   }
 
   putLikeComment(postId: string, commentId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(
-      environment.baseURL + `posts/${postId}/comments/${commentId}/like`,
-      data,
-    );
+    return this.api.put<DefaultResponse>(`posts/${postId}/comments/${commentId}/like`, data);
   }
 
   putBookmarkPost(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(environment.baseURL + `posts/${postId}/bookmark`, data);
+    return this.api.put<DefaultResponse>(`posts/${postId}/bookmark`, data);
   }
 
   /**
-   * 
-   * @param data 
-   * {
-        "body": "Sharing this great post @mentor_user"
-      }
-   * @returns 
+   * Share a post
+   * @param postId The post to share
+   * @param data Body with optional text content
    */
   postShare(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.post<any>(environment.baseURL + `posts/${postId}/share`, data);
+    return this.api.post<DefaultResponse>(`posts/${postId}/share`, data);
   }
 }

@@ -1,79 +1,64 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
-import { AuthResponse } from '../../auth/models/auth.interface';
+import { ApiService } from '../api.service';
 import { DefaultResponse } from '../../models/default.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostsService {
-  private readonly httpClient = inject(HttpClient);
+  private readonly api = inject(ApiService);
 
-  getAllPosts(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'posts', {
-      params: data,
-    });
+  getAllPosts(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('posts', params);
   }
 
-  getFeed(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + 'posts/feed', {
-      params: { only: 'following', limit: 10, data },
-    });
+  getFeed(params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>('posts/feed', { only: 'following', limit: 10, ...params });
   }
 
   /**
-   * 
-   * @param data 
-   * Body formdata
-      body    Hello Route Academy! @ahmed_ali
-      image
-   * @returns 
+   * Create a new post
+   * @param data FormData with body (text content, supports @mentions) and optional image
    */
   postCreate(data: object): Observable<DefaultResponse> {
-    return this.httpClient.post<any>(environment.baseURL + 'posts', data);
+    return this.api.post<DefaultResponse>('posts', data);
   }
 
-  getSinglePost(postId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + `posts/${postId}`, {
-      params: data,
-    });
+  getSinglePost(postId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`posts/${postId}`, params);
   }
 
-  getPostLikes(postId: string, data?: any): Observable<DefaultResponse> {
-    return this.httpClient.get<any>(environment.baseURL + `posts/${postId}/likes`, {
-      params: { page: 1, limit: 20, data },
+  getPostLikes(postId: string, params?: any): Observable<DefaultResponse> {
+    return this.api.get<DefaultResponse>(`posts/${postId}/likes`, {
+      page: 1,
+      limit: 20,
+      ...params,
     });
   }
 
   putPost(data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(environment.baseURL + 'posts', data);
+    return this.api.put<DefaultResponse>('posts', data);
   }
 
-  deletePost(data?: any): Observable<DefaultResponse> {
-    return this.httpClient.delete<any>(environment.baseURL + 'posts', {
-      params: { data },
-    });
+  deletePost(params?: any): Observable<DefaultResponse> {
+    return this.api.delete<DefaultResponse>('posts');
   }
 
   putLikePost(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(environment.baseURL + `posts/${postId}/like`, data);
+    return this.api.put<DefaultResponse>(`posts/${postId}/like`, data);
   }
 
   putBookmarkPost(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.put<any>(environment.baseURL + `posts/${postId}/bookmark`, data);
+    return this.api.put<DefaultResponse>(`posts/${postId}/bookmark`, data);
   }
 
   /**
-   * 
-   * @param data 
-   * {
-        "body": "Sharing this great post @mentor_user"
-      }
-   * @returns 
+   * Share a post
+   * @param postId The post to share
+   * @param data Body with optional text content
    */
   postShare(postId: string, data: object): Observable<DefaultResponse> {
-    return this.httpClient.post<any>(environment.baseURL + `posts/${postId}/share`, data);
+    return this.api.post<DefaultResponse>(`posts/${postId}/share`, data);
   }
 }
