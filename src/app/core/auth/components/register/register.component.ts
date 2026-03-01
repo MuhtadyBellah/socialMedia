@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from '../../models/auth.interface';
+import { ErrorResponse } from '../../../models/error.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 

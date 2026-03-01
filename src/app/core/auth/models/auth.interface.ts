@@ -1,8 +1,8 @@
+import { Default } from '../../models/default.interface';
 export interface Auth {}
 
 export interface AuthResponse {
-  success: true;
-  message: string;
+  default: Default;
   data: {
     token: string;
     tokenType: string;
@@ -16,10 +16,4 @@ export interface AuthResponse {
       cover: string;
     };
   };
-}
-
-export interface ErrorResponse {
-  success: false;
-  message: string;
-  errors: any;
 }
