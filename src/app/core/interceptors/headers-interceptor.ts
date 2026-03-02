@@ -1,6 +1,5 @@
-import { HttpHeaders, HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { authGuard } from '../guards/auth-guard';
 
 export const headersInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem(environment.userToken);
@@ -13,6 +12,7 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
     ) {
       req = req.clone({
         setHeaders: {
+          'Content-Type': 'application/json',
           authorization: `Bearer ${token}`,
         },
       });

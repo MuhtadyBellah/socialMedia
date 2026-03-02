@@ -12,6 +12,9 @@ import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { headersInterceptor } from './core/interceptors/headers-interceptor';
 import { errorsInterceptor } from './core/interceptors/errors-interceptor';
 import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { loadingInterceptor } from './core/interceptors/loading-interceptor';
+//search animate.enter | animate.leave
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,8 +29,14 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, headersInterceptor, errorsInterceptor]),
+      withInterceptors([
+        authInterceptor,
+        headersInterceptor,
+        errorsInterceptor,
+        loadingInterceptor,
+      ]),
     ),
     provideToastr(),
+    provideAnimations(),
   ],
 };
