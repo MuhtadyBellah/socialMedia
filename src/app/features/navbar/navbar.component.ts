@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-navbar',
@@ -46,27 +47,12 @@ export class NavbarComponent {
     }
   }
 
-  navigateTo(route: string): void {
-    this.router.navigate([route]);
-    this.isMobileMenuOpen.set(false);
-  }
-
   logout(): void {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem(environment.userToken);
     this.router.navigate(['/auth/login']);
   }
 
   closeDropdown(): void {
     this.isProfileDropdownOpen.set(false);
-  }
-
-  openNotifications(): void {
-    this.router.navigate(['/main/notifications']);
-    this.notificationCount.set(0);
-  }
-
-  openMessages(): void {
-    this.router.navigate(['/main/messages']);
-    this.messageCount.set(0);
   }
 }

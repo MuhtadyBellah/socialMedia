@@ -5,17 +5,13 @@ import { ChangPasswordComponent } from './features/chang-password/chang-password
 import { FeedComponent } from './features/feed/feed.component';
 import { HomeComponent } from './features/home/home.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
+import { NotificationsComponent } from './features/notifications/notifications.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'auth',
-    pathMatch: 'full',
-  },
   {
     path: 'auth',
     component: AuthLayoutComponent,
@@ -38,9 +34,9 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'main',
+    path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -54,8 +50,8 @@ export const routes: Routes = [
       },
       {
         path: 'feed',
-        component: FeedComponent,
-        title: 'Feed',
+        redirectTo: 'home',
+        pathMatch: 'full',
       },
       {
         path: 'profile',
@@ -66,6 +62,11 @@ export const routes: Routes = [
         path: 'changePassword',
         component: ChangPasswordComponent,
         title: 'Change Password',
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+        title: 'Notifications',
       },
     ],
   },
