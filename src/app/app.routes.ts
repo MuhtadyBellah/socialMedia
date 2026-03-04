@@ -10,6 +10,7 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { Routes } from '@angular/router';
+import { SuggestedComponent } from './shared/components/suggested/suggested.component';
 
 export const routes: Routes = [
   {
@@ -36,7 +37,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -67,6 +68,11 @@ export const routes: Routes = [
         path: 'notifications',
         component: NotificationsComponent,
         title: 'Notifications',
+      },
+      {
+        path: 'suggestions',
+        component: SuggestedComponent,
+        title: 'Suggestions',
       },
     ],
   },

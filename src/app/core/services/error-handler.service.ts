@@ -56,7 +56,7 @@ export class ErrorHandlerService {
         break;
 
       case 400:
-        message = err.error?.message || 'Invalid request. Please check your input.';
+        message = 'Incorrect Email or Password';
         details = this.stringifyError(err.error);
         break;
 
@@ -76,7 +76,7 @@ export class ErrorHandlerService {
         break;
 
       case 409:
-        message = err.error?.message || 'Conflict: Resource already exists.';
+        message = 'Resource already exists.';
         break;
 
       case 500:

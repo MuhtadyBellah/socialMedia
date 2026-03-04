@@ -12,11 +12,15 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
     ) {
       req = req.clone({
         setHeaders: {
-          'Content-Type': 'application/json',
           authorization: `Bearer ${token}`,
         },
       });
     }
   }
+  req.clone({
+    setHeaders: {
+      'Content-Type': 'application/json',
+    },
+  });
   return next(req);
 };

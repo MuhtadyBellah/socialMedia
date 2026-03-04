@@ -12,18 +12,9 @@ import { environment } from '../../../environments/environment.development';
 export class NavbarComponent {
   private readonly router = inject(Router);
 
-  // Toggle dropdown menu visibility
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
 
-  // Navigation menu items
-  navItems = [
-    { label: 'Home', route: '/main/home', icon: '🏠' },
-    { label: 'Explore', route: '/main/explore', icon: '🔍' },
-    { label: 'Bookmarks', route: '/main/bookmarks', icon: '🔖' },
-  ];
-
-  // User profile data (you can fetch this from service)
   userProfile = {
     name: 'User Name',
     avatar: '/images/default-profile.png',

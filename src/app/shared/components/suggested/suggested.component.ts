@@ -1,11 +1,11 @@
 import { Component, inject, Input } from '@angular/core';
 import { SuggestedUser } from '../../../core/auth/models/auth.interface';
 import { NgClass } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-suggested',
-  imports: [NgClass],
+  imports: [NgClass, RouterLink],
   templateUrl: './suggested.component.html',
   styleUrl: './suggested.component.css',
 })
@@ -45,7 +45,7 @@ export class SuggestedComponent {
 
   viewMore() {
     if (this.mode === 'sidebar') {
-      this.router.navigate(['/suggestion']);
+      this.router.navigate(['/suggestions']);
     }
   }
 }

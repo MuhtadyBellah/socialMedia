@@ -17,3 +17,10 @@ export interface AuthResponse {
     };
   };
 }
+
+export interface SuggestedUser {
+  name: string;
+  handle: string;
+  avatar: string;
+  followers: number;
+}
