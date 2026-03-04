@@ -7,7 +7,7 @@ export interface AuthResponse {
     token: string;
     tokenType: string;
     expiresIn: number;
-    user: {
+    user?: {
       id: number;
       name: string;
       username?: string;

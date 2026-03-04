@@ -4,12 +4,7 @@ import { environment } from '../../../environments/environment.development';
 export const headersInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem(environment.userToken);
   if (token) {
-    if (
-      req.url.includes('posts') ||
-      req.url.includes('comments') ||
-      req.url.includes('notifications') ||
-      (req.url.includes('users') && !req.url.includes('/signup') && !req.url.includes('/signin'))
-    ) {
+    if (!req.url.includes('/auth/signup') && !req.url.includes('/auth/signin')) {
       req = req.clone({
         setHeaders: {
           authorization: `Bearer ${token}`,
@@ -17,6 +12,7 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
       });
     }
   }
+
   req.clone({
     setHeaders: {
       'Content-Type': 'application/json',

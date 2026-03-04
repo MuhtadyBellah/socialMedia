@@ -1,12 +1,17 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
 
-interface ErrorDetails {
+export interface ErrorDetails {
   message: string;
-  code: string | number;
-  details: string;
+  code: number | string;
+  details?: string;
+}
+
+export interface SuccessDetails {
+  message: string;
+  title?: string;
 }
 
 @Injectable({
@@ -15,24 +20,23 @@ interface ErrorDetails {
 export class ErrorHandlerService {
   private readonly toastr = inject(ToastrService);
   private readonly baseUrl = environment.baseURL;
-  private readonly TOKEN_KEY = environment.userToken;
 
   /**
    * Handle HTTP errors and convert to user-friendly messages
    * Shows toast notification and logs error for debugging
    */
-  handleError(err: HttpErrorResponse): ErrorDetails {
-    const errorDetails = this.parseError(err);
+  handleError(error: HttpErrorResponse): ErrorDetails {
+    const errorDetails = this.parseError(error);
 
     // Show toast notification to user
     this.toastr.error(errorDetails.message, 'Social App');
 
     // Log detailed error for debugging
     console.error('API Error:', {
-      status: err.status,
-      statusText: err.statusText,
+      status: error.status,
+      statusText: error.statusText,
       message: errorDetails.message,
-      url: err.url,
+      url: error.url,
       details: errorDetails.details,
       timestamp: new Date().toISOString(),
     });
@@ -43,10 +47,9 @@ export class ErrorHandlerService {
   /**
    * Parse HTTP error response and extract user-friendly message
    */
-  private parseError(err: HttpErrorResponse): ErrorDetails {
-    debugger;
+  private parseError(error: HttpErrorResponse): ErrorDetails {
     let message = 'Something went wrong. Please try again.';
-    let code = err.status || 'UNKNOWN';
+    let code = error.status || 'UNKNOWN';
     let details = '';
 
     switch (code) {
@@ -57,22 +60,22 @@ export class ErrorHandlerService {
 
       case 400:
         message = 'Incorrect Email or Password';
-        details = this.stringifyError(err.error);
+        details = this.stringifyError(error.error);
         break;
 
       case 401:
-        message = 'Session expired. Please log in again.';
+        message = error.error?.message || 'Session expired. Please log in again.';
         this.clearUserToken();
         break;
 
       case 403:
         message = 'You do not have permission to perform this action.';
-        details = err.error?.message || '';
+        details = error.error?.message || '';
         break;
 
       case 404:
         message = 'The requested resource was not found.';
-        details = `Endpoint not found: ${err.url}`;
+        details = `Endpoint not found: ${error.url}`;
         break;
 
       case 409:
@@ -80,14 +83,14 @@ export class ErrorHandlerService {
         break;
 
       case 500:
-        message = 'Server err. Please try again later.';
-        details = err.error?.message || '';
+        message = 'Server error. Please try again later.';
+        details = error.error?.message || '';
         break;
 
       default:
-        message = err.error?.message || message;
-        if (err.error && typeof err.error === 'object') {
-          details = this.stringifyError(err.error);
+        message = error.error?.message || message;
+        if (error.error && typeof error.error === 'object') {
+          details = this.stringifyError(error.error);
         }
     }
 
@@ -109,6 +112,41 @@ export class ErrorHandlerService {
    * Clear user token on authentication failure
    */
   private clearUserToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(environment.userToken);
+  }
+
+  /**
+   * Handle HTTP success responses
+   * Shows success toast notification if response contains a message
+   */
+  handleSuccess(response: any): SuccessDetails | null {
+    const message = response?.message || response?.data?.message || '';
+
+    if (!message) {
+      return null;
+    }
+
+    const successDetails: SuccessDetails = {
+      message: String(message),
+      title: 'Success',
+    };
+
+    this.toastr.success(successDetails.message, successDetails.title);
+
+    console.log('API Success:', {
+      message: successDetails.message,
+      timestamp: new Date().toISOString(),
+    });
+
+    return successDetails;
+  }
+
+  shouldShowSuccessNotification(url: string, method: string): boolean {
+    if (method === 'GET') {
+      return false;
+    }
+
+    const excludedPaths = ['/auth/signin', '/auth/signup'];
+    return !excludedPaths.some((path) => url.includes(path));
   }
 }

@@ -15,11 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { ErrorResponse } from '../../../models/error.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-
-const PATTERNS = {
-  PASSWORD: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
-  PHONE_EG: /^01[0125]\d{8}$/,
-};
+import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-register',
@@ -70,12 +66,16 @@ export class RegisterComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
-          [Validators.required, Validators.minLength(8), Validators.pattern(PATTERNS.PASSWORD)],
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(environment.PASSWORD_PATTERN),
+          ],
         ],
         rePassword: ['', Validators.required],
         gender: [''],
         dateOfBirth: [''],
-        phone: ['', [Validators.pattern(PATTERNS.PHONE_EG)]],
+        phone: ['', [Validators.pattern(environment.PHONE_EG)]],
         country: [''],
         terms: [false, Validators.requiredTrue],
       },
@@ -135,19 +135,9 @@ export class RegisterComponent implements OnInit {
       .postRegister(registerData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-          console.log('Registration successful:', response);
-          this.registerForm.reset();
-          this.errorMessage = '';
-          this.isSubmitted = false;
-          this.router.navigate(['/auth/login']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.errorMessage =
-            error.error?.message || 'An error occurred during registration. Please try again.';
-          this.isSubmitted = false;
-        },
+        next: (response) => {},
       });
+    this.isSubmitted = false;
   }
 
   togglePasswordVisibility(): void {

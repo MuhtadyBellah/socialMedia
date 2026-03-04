@@ -24,8 +24,8 @@ export class AuthService {
       "newPassword": "Bb@123456"
     }
   */
-  patchChangePassword(data: object): Observable<DefaultResponse> {
-    return this.api.patch<DefaultResponse>('users/change-password', data);
+  patchChangePassword(data: object): Observable<AuthResponse> {
+    return this.api.patch<AuthResponse>('users/change-password', data);
   }
 
   getProfileData(params?: any): Observable<DefaultResponse> {

@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit {
 
   // controls whether password inputs are visible
   showPassword = false;
-  showRePassword = false;
 
   ngOnInit(): void {
     this.loginForm = this.formBuild.group({
@@ -49,19 +48,9 @@ export class LoginComponent implements OnInit {
       .postLogin({ email, password })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          console.log('Login successful', response);
-          if (response.data) {
-            localStorage.setItem('userToken', response.data.token);
-          }
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = 'Invalid email or password. Please try again.';
-        },
+        next: (response) => {},
       });
+    this.isLoading = false;
   }
 
   togglePasswordVisibility(): void {
