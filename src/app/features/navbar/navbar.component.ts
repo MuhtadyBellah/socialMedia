@@ -21,11 +21,19 @@ export class NavbarComponent implements OnInit {
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
 
-  // Get user profile from UserService signal
-  currentUser: UserData = JSON.parse(environment.userData);
+  currentUser: UserData | null = null;
 
   ngOnInit(): void {
-    debugger;
+    const storedData = localStorage.getItem(environment.userData);
+    if (storedData) {
+      try {
+        this.currentUser = JSON.parse(storedData);
+      } catch (error) {
+        console.error('Error parsing user data', error);
+        this.currentUser = null;
+      }
+    }
+
     this.notificationsService
       .getUnreadCount()
       .pipe(takeUntilDestroyed(this.destroyRef))
