@@ -4,12 +4,10 @@ import { catchError, tap, throwError } from 'rxjs';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
-import { Default, DefaultResponse } from '../models/default.interface';
 
 export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
   const errorHandler = inject(ErrorHandlerService);
   const router = inject(Router);
-  const TOKEN_KEY = environment.userToken;
 
   return next(req).pipe(
     tap((response: any) => {
@@ -18,10 +16,16 @@ export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (req.url.includes('signin') || req.url.includes('change-password')) {
-        console.log(response);
-        const token = response?.body?.data?.token;
-        if (token) {
-          localStorage.setItem(TOKEN_KEY, token);
+        const data = response?.body?.data;
+
+        if (data) {
+          localStorage.setItem(environment.userToken, data.token);
+
+          if (req.url.includes('signin')) {
+            const userData = data.user;
+            localStorage.setItem(environment.userData, JSON.stringify(userData));
+          }
+
           router.navigate(['/home']);
         }
       }

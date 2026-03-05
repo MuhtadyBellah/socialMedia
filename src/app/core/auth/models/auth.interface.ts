@@ -7,15 +7,17 @@ export interface AuthResponse {
     token: string;
     tokenType: string;
     expiresIn: number;
-    user?: {
-      id: number;
-      name: string;
-      username?: string;
-      email: string;
-      photo: string;
-      cover: string;
-    };
+    user?: UserData;
   };
+}
+
+export interface UserData {
+  id: number;
+  name: string;
+  username?: string;
+  email: string;
+  photo: string;
+  cover: string;
 }
 
 export interface SuggestedUser {

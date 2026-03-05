@@ -98,11 +98,11 @@
               d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
             ></path>
           </svg>
-          @if (notificationCount() > 0) {
+          @if (notificationCount > 0) {
             <div
               class="absolute -top-1.5 -right-1.5 flex items-center justify-center w-4 h-4 text-2xs font-bold text-white bg-red-500 border-2 border-white rounded-full"
             >
-              {{ notificationCount() }}
+              {{ notificationCount }}
             </div>
           }</span
         ><span class="hidden sm:inline">Notifications</span
@@ -117,11 +117,11 @@
         [attr.aria-expanded]="isProfileDropdownOpen()"
       >
         <img
-          [alt]="userProfile.name"
+          [alt]="currentUser.name"
           class="h-8 w-8 rounded-full object-cover"
-          [src]="userProfile.avatar"
+          [src]="currentUser.email"
         /><span class="hidden max-w-35 truncate text-sm font-semibold text-slate-800 md:block">{{
-          userProfile.name
+          currentUser.name
         }}</span
         ><svg
           xmlns="http://www.w3.org/2000/svg"
