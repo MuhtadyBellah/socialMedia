@@ -1,5 +1,5 @@
-import { UserData } from './../../../core/auth/models/auth.interface';
-import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-profile-photo',
@@ -10,4 +10,8 @@ import { Component, Input } from '@angular/core';
 export class ProfilePhotoComponent {
   @Input({ required: true }) name!: string;
   @Input({ required: true }) photo!: string;
+  @Output() closeViewer = new EventEmitter();
+  onClose() {
+    this.closeViewer.emit();
+  }
 }

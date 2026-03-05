@@ -12,12 +12,23 @@ export interface AuthResponse {
 }
 
 export interface UserData {
-  id: number;
+  _id: string;
+  id: string;
   name: string;
-  username?: string;
+  username: string;
   email: string;
   photo: string;
   cover: string;
+  dateOfBirth: string;
+  gender: string;
+  bookmarks: [];
+  followers: [];
+  following: [];
+  createdAt: string;
+  passwordChangedAt: string;
+  followersCount: 0;
+  followingCount: 0;
+  bookmarksCount: 0;
 }
 
 export interface SuggestedUser {

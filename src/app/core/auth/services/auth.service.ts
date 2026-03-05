@@ -18,12 +18,6 @@ export class AuthService {
     return this.api.post<AuthResponse>('users/signin', data);
   }
 
-  /*
-    {
-      "password": "Aa@123456",
-      "newPassword": "Bb@123456"
-    }
-  */
   patchChangePassword(data: object): Observable<AuthResponse> {
     return this.api.patch<AuthResponse>('users/change-password', data);
   }
