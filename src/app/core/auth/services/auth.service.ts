@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { AuthResponse } from '../models/auth.interface';
 import { DefaultResponse } from '../../models/default.interface';
+import { BookmarkResponse } from '../../models/bookmark.interface';
+import { PostResponse } from '../../models/post.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +28,8 @@ export class AuthService {
     return this.api.get<DefaultResponse>('users/profile-data', params);
   }
 
-  getBookmarks(params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>('users/bookmarks', params);
+  getBookmarks(params?: any): Observable<BookmarkResponse> {
+    return this.api.get<BookmarkResponse>('users/bookmarks', params);
   }
 
   getFollowSuggestions(params?: any): Observable<DefaultResponse> {
@@ -42,7 +44,7 @@ export class AuthService {
     return this.api.put<DefaultResponse>(`users/${userId}/follow`, data);
   }
 
-  getUserPosts(userId: string, params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>(`users/${userId}/posts`, params);
+  getUserPosts(userId: string, params?: any): Observable<PostResponse> {
+    return this.api.get<PostResponse>(`users/${userId}/posts`, params);
   }
 }

@@ -7,14 +7,19 @@
       <p class="text-gray-500 text-sm">Please sign in to your account.</p>
     </div>
 
-    @if (errorMessage) {
-      <app-alert type="danger" title="Login Failed:" [message]="errorMessage"></app-alert>
+    @if (errorMessage()) {
+      <app-alert type="danger" title="Login Failed:" [message]="errorMessage()"></app-alert>
     }
 
-    <form class="w-full mt-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form class="w-full mt-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="relative z-0 w-full mb-6 group">
         <svg
-          class="absolute top-3 left-0 w-5 h-5 text-gray-400"
+          class="absolute top-3 left-0 w-5 h-5"
+          [ngClass]="
+            loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              ? 'text-red-400'
+              : 'text-gray-400'
+          "
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -30,19 +35,44 @@
           type="email"
           id="email"
           formControlName="email"
-          class="block py-2.5 pl-8 pr-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          aria-label="Email Address"
+          [ngClass]="
+            loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              ? 'border-red-500'
+              : 'border-gray-300'
+          "
+          class="block py-2.5 pl-8 pr-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
+          [ngClass]="
+            loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              ? 'focus:border-red-600'
+              : 'focus:border-blue-600'
+          "
           placeholder=" "
         />
         <label
           for="email"
-          class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >Email Address</label
+          class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:scale-75 peer-focus:-translate-y-6"
+          [ngClass]="
+            loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              ? 'text-red-500 peer-focus:text-red-600'
+              : 'text-gray-500 peer-focus:text-blue-600'
+          "
         >
+          Email Address
+        </label>
+        @if (getFieldError('email')) {
+          <p class="mt-1 text-xs text-red-500">{{ getFieldError('email') }}</p>
+        }
       </div>
 
       <div class="relative z-0 w-full mb-6 group">
         <svg
-          class="absolute top-3 left-0 w-5 h-5 text-gray-400"
+          class="absolute top-3 left-0 w-5 h-5"
+          [ngClass]="
+            loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              ? 'text-red-400'
+              : 'text-gray-400'
+          "
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -56,51 +86,79 @@
         </svg>
 
         <input
-          [type]="showPassword ? 'text' : 'password'"
+          [type]="showPassword() ? 'text' : 'password'"
           id="password"
           formControlName="password"
-          class="block py-2.5 pl-8 pr-10 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          aria-label="Password"
+          [ngClass]="
+            loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              ? 'border-red-500'
+              : 'border-gray-300'
+          "
+          class="block py-2.5 pl-8 pr-10 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
+          [ngClass]="
+            loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              ? 'focus:border-red-600'
+              : 'focus:border-blue-600'
+          "
           placeholder=" "
         />
 
         <label
           for="password"
-          class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >Password</label
+          class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-8 peer-focus:scale-75 peer-focus:-translate-y-6"
+          [ngClass]="
+            loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              ? 'text-red-500 peer-focus:text-red-600'
+              : 'text-gray-500 peer-focus:text-blue-600'
+          "
         >
+          Password
+        </label>
 
         <button
           type="button"
-          class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none"
+          aria-label="Toggle password visibility"
+          class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none transition-colors"
           (click)="togglePasswordVisibility()"
         >
-          <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          <i class="fas" [ngClass]="showPassword() ? 'fa-eye-slash' : 'fa-eye'"></i>
         </button>
+
+        @if (getFieldError('password')) {
+          <p class="mt-1 text-xs text-red-500">{{ getFieldError('password') }}</p>
+        }
       </div>
 
-      <div class="flex items-center justify-between mb-8 mt-2">
+      <div class="flex items-center justify-between mb-8 mt-6">
         <div class="flex items-center h-5">
           <input
             id="remember"
             type="checkbox"
             formControlName="rememberMe"
+            aria-label="Remember me"
             class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 cursor-pointer"
           />
           <label for="remember" class="ml-2 text-sm font-medium text-gray-600 cursor-pointer"
             >Remember me</label
           >
         </div>
-        <a href="#" class="text-sm font-medium text-blue-600 hover:underline">Forgot password?</a>
+        <a
+          href="#"
+          class="text-sm font-medium text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-2 py-1"
+          >Forgot password?</a
+        >
       </div>
 
       <button
-        [disabled]="isLoading"
+        [disabled]="isSubmitDisabled()"
         type="submit"
-        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+        aria-label="Sign in to your account"
+        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 flex justify-center items-center gap-2"
       >
-        @if (isLoading) {
-          Signing In...
-          <i class="animate-spin text-white fas fa-spinner"></i>
+        @if (isLoading()) {
+          <span>Signing In...</span>
+          <i class="animate-spin fas fa-spinner"></i>
         } @else {
           Sign In
         }
@@ -108,7 +166,9 @@
 
       <p class="text-sm text-center text-gray-500 mt-6">
         Don't have an account yet?
-        <a routerLink="/auth/register" class="font-medium text-blue-600 hover:underline"
+        <a
+          routerLink="/auth/register"
+          class="font-medium text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-1"
           >Register here</a
         >
       </p>

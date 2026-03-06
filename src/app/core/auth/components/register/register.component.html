@@ -1,21 +1,26 @@
 <section
-  class="bg-gray-200 p-6 md:p-8 shadow-lg rounded-xl w-full max-w-md mx-auto my-10 border border-gray-200"
+  class="bg-gray-200 p-6 md:p-8 shadow-lg rounded-xl w-full max-w-2xl mx-auto my-10 border border-gray-200 max-h-[90vh] overflow-y-auto"
 >
   <div class="container mx-auto p-6 rounded-lg">
+    <!-- Header -->
     <div class="text-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">Create an Account</h1>
       <p class="text-gray-500 text-sm">Join us today! Please fill in your details below.</p>
     </div>
 
-    <app-alert
-      *ngIf="formErrors.length > 0"
-      type="danger"
-      title="Please fix the following errors:"
-      [items]="formErrors"
-    ></app-alert>
+    <!-- Form Validation Errors Alert -->
+    @if (getFormErrors().length > 0) {
+      <app-alert
+        type="danger"
+        title="Please fix the following errors:"
+        [items]="getFormErrors()"
+      ></app-alert>
+    }
 
-    <form class="w-full mt-4" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="flex items-center gap-4 mb-6">
+    <!-- Registration Form -->
+    <form class="w-full mt-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Full Name Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -34,18 +39,26 @@
             type="text"
             id="name"
             formControlName="name"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Full Name"
+            [ngClass]="hasFieldError('name') ? 'border-red-500 focus:border-red-600' : 'border-gray-300 focus:border-blue-600'"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
             placeholder=" "
           />
           <label
             for="name"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Full Name</label
+            class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            [ngClass]="hasFieldError('name') ? 'text-red-500 peer-focus:text-red-600' : 'text-gray-500 peer-focus:text-blue-600'"
           >
+            Full Name
+          </label>
+          @if (getFieldError('name')) {
+            <p class="mt-1 text-xs text-red-500">{{ getFieldError('name') }}</p>
+          }
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Email Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -64,18 +77,26 @@
             type="email"
             id="email"
             formControlName="email"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Email Address"
+            [ngClass]="hasFieldError('email') ? 'border-red-500 focus:border-red-600' : 'border-gray-300 focus:border-blue-600'"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
             placeholder=" "
           />
           <label
             for="email"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Email Address</label
+            class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            [ngClass]="hasFieldError('email') ? 'text-red-500 peer-focus:text-red-600' : 'text-gray-500 peer-focus:text-blue-600'"
           >
+            Email Address
+          </label>
+          @if (getFieldError('email')) {
+            <p class="mt-1 text-xs text-red-500">{{ getFieldError('email') }}</p>
+          }
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Phone Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -94,18 +115,26 @@
             type="tel"
             id="phone"
             formControlName="phone"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Phone Number (Optional)"
+            [ngClass]="hasFieldError('phone') ? 'border-red-500 focus:border-red-600' : 'border-gray-300 focus:border-blue-600'"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
             placeholder=" "
           />
           <label
             for="phone"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Phone Number</label
+            class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            [ngClass]="hasFieldError('phone') ? 'text-red-500 peer-focus:text-red-600' : 'text-gray-500 peer-focus:text-blue-600'"
           >
+            Phone Number (Optional)
+          </label>
+          @if (getFieldError('phone')) {
+            <p class="mt-1 text-xs text-red-500">{{ getFieldError('phone') }}</p>
+          }
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Gender Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -123,7 +152,8 @@
           <select
             id="gender"
             formControlName="gender"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Gender (Optional)"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           >
             <option value="" disabled selected hidden></option>
             <option value="male">Male</option>
@@ -132,13 +162,15 @@
           </select>
           <label
             for="gender"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Gender</label
+            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-blue-600 peer-focus:scale-75 peer-focus:-translate-y-6"
           >
+            Gender (Optional)
+          </label>
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Date of Birth Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -157,18 +189,21 @@
             type="date"
             id="dateOfBirth"
             formControlName="dateOfBirth"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Date of Birth (Optional)"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
           />
           <label
             for="dateOfBirth"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Date of Birth</label
+            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-blue-600 peer-focus:scale-75 peer-focus:-translate-y-6"
           >
+            Date of Birth (Optional)
+          </label>
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Password Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -184,29 +219,40 @@
         </svg>
         <div class="relative z-0 w-full group">
           <input
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
             id="password"
             formControlName="password"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Password"
+            [ngClass]="hasFieldError('password') ? 'border-red-500 focus:border-red-600' : 'border-gray-300 focus:border-blue-600'"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
             placeholder=" "
           />
           <label
             for="password"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Password</label
+            class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            [ngClass]="hasFieldError('password') ? 'text-red-500 peer-focus:text-red-600' : 'text-gray-500 peer-focus:text-blue-600'"
           >
+            Password
+          </label>
 
+          <!-- Password Visibility Toggle -->
           <button
             type="button"
-            class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none"
+            aria-label="Toggle password visibility"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none transition-colors"
             (click)="togglePasswordVisibility()"
           >
-            <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            <i class="fas" [ngClass]="showPassword() ? 'fa-eye-slash' : 'fa-eye'"></i>
           </button>
+
+          @if (getFieldError('password')) {
+            <p class="mt-1 text-xs text-red-500">{{ getFieldError('password') }}</p>
+          }
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Confirm Password Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -222,28 +268,40 @@
         </svg>
         <div class="relative z-0 w-full group">
           <input
-            [type]="showRePassword ? 'text' : 'password'"
+            [type]="showRePassword() ? 'text' : 'password'"
             id="rePassword"
             formControlName="rePassword"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Confirm Password"
+            [ngClass]="(hasFieldError('rePassword') || registerForm.hasError('mismatch')) ? 'border-red-500 focus:border-red-600' : 'border-gray-300 focus:border-blue-600'"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer"
             placeholder=" "
           />
           <label
             for="rePassword"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Confirm password</label
+            class="absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            [ngClass]="(hasFieldError('rePassword') || registerForm.hasError('mismatch')) ? 'text-red-500 peer-focus:text-red-600' : 'text-gray-500 peer-focus:text-blue-600'"
           >
+            Confirm Password
+          </label>
+
+          <!-- Confirm Password Visibility Toggle -->
           <button
             type="button"
-            class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none"
+            aria-label="Toggle confirm password visibility"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600 hover:text-blue-600 z-10 focus:outline-none transition-colors"
             (click)="toggleRePasswordVisibility()"
           >
-            <i class="fas" [ngClass]="showRePassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            <i class="fas" [ngClass]="showRePassword() ? 'fa-eye-slash' : 'fa-eye'"></i>
           </button>
+
+          @if (getFieldError('rePassword')) {
+            <p class="mt-1 text-xs text-red-500">{{ getFieldError('rePassword') }}</p>
+          }
         </div>
       </div>
 
-      <div class="flex items-center gap-4 mb-6">
+      <!-- Country Field -->
+      <div class="flex items-start gap-4 mb-6">
         <svg
           class="w-6 h-6 text-gray-400 shrink-0 mt-3"
           fill="none"
@@ -262,55 +320,69 @@
             type="text"
             id="country"
             formControlName="country"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main peer"
+            aria-label="Country (Optional)"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
           />
           <label
             for="country"
-            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-main peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >Country (Optional)</label
+            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-left left-0 peer-focus:left-0 peer-focus:text-blue-600 peer-focus:scale-75 peer-focus:-translate-y-6"
           >
+            Country (Optional)
+          </label>
         </div>
       </div>
 
-      <div class="flex items-start mb-8 mt-2 ml-10">
+      <!-- Terms & Conditions Checkbox -->
+      <div class="flex items-start mb-8 mt-6 gap-3">
         <div class="flex items-center h-5">
           <input
             id="terms"
             type="checkbox"
             formControlName="terms"
-            class="w-4 h-4 text-main border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-main/30 cursor-pointer"
+            aria-label="I agree to Terms and Conditions"
+            [ngClass]="hasFieldError('terms') ? 'border-red-500 accent-red-600' : 'border-gray-300 accent-blue-600'"
+            class="w-4 h-4 border rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 cursor-pointer"
           />
         </div>
-        <label for="terms" class="ml-2 text-sm font-medium text-gray-600 cursor-pointer">
+        <label for="terms" class="text-sm font-medium text-gray-600 cursor-pointer leading-relaxed">
           I agree with the
-          <a href="#" class="text-main font-semibold hover:underline">Terms and Conditions</a> and
-          <a href="#" class="text-main font-semibold hover:underline">Privacy Policy</a>.
+          <a href="#" class="text-blue-600 font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-1"
+            >Terms and Conditions</a
+          >
+          and
+          <a href="#" class="text-blue-600 font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-1"
+            >Privacy Policy</a
+          >.
         </label>
       </div>
+      @if (hasFieldError('terms')) {
+        <p class="mt-1 text-xs text-red-500 ml-7 mb-4">{{ getFieldError('terms') }}</p>
+      }
 
+      <!-- Submit Button -->
       <button
-        [disabled]="isSubmitted"
+        [disabled]="isSubmitDisabled()"
         type="submit"
-        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3.5 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+        aria-label="Create your account"
+        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-sm px-5 py-3 text-center transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 flex justify-center items-center gap-2"
       >
-        @if (isSubmitted) {
-          Creating Account...
-          <i class="animate-spin text-white fas fa-spinner"></i>
+        @if (isLoading()) {
+          <span>Creating Account...</span>
+          <i class="animate-spin fas fa-spinner"></i>
         } @else {
           Register Account
         }
       </button>
 
-      <app-alert
-        *ngIf="errorMessage"
-        type="danger"
-        title="Registration Failed"
-        [message]="errorMessage"
-      ></app-alert>
+      <!-- Sign In Link -->
       <p class="text-sm text-center text-gray-500 mt-6">
         Already have an account?
-        <a routerLink="/auth/login" class="font-bold text-blue-600 hover:underline">Sign in here</a>
+        <a
+          routerLink="/auth/login"
+          class="font-semibold text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-1"
+          >Sign in here</a
+        >
       </p>
     </form>
   </div>

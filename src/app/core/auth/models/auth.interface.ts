@@ -1,8 +1,8 @@
-import { Default } from '../../models/default.interface';
+import { Default, DefaultResponse } from '../../models/default.interface';
 export interface Auth {}
 
 export interface AuthResponse {
-  default: Default;
+  default: DefaultResponse;
   data: {
     token: string;
     tokenType: string;

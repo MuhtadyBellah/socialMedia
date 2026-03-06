@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,13 +7,11 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from '../../../models/error.interface';
-import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../../environments/environment.development';
 
@@ -27,15 +25,14 @@ export class RegisterComponent implements OnInit {
   private readonly formBuild = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
 
   registerForm!: FormGroup;
-  isSubmitted = false;
-  errorMessage = '';
 
-  // controls whether password inputs are visible
-  showPassword = false;
-  showRePassword = false;
+  readonly isLoading = signal(false);
+  readonly showPassword = signal(false);
+  readonly showRePassword = signal(false);
+
+  readonly isSubmitDisabled = computed(() => this.registerForm?.invalid || this.isLoading());
 
   private readonly validationMessages: Record<string, Record<string, string>> = {
     name: { required: 'Full name is required.' },
@@ -83,6 +80,9 @@ export class RegisterComponent implements OnInit {
     );
   }
 
+  /**
+   * Custom validator to ensure password and rePassword match
+   */
   private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const rePassword = group.get('rePassword')?.value;
@@ -92,19 +92,19 @@ export class RegisterComponent implements OnInit {
     return password === rePassword ? null : { mismatch: true };
   }
 
-  get formErrors(): string[] {
+  getFormErrors(): string[] {
     const errors: string[] = [];
     if (!this.registerForm) return errors;
 
     if (this.registerForm.hasError('mismatch')) {
       const confirmCtrl = this.registerForm.get('rePassword');
-      if (confirmCtrl?.touched || confirmCtrl?.dirty || this.isSubmitted) {
+      if (confirmCtrl?.touched || confirmCtrl?.dirty || this.isLoading()) {
         errors.push(this.validationMessages['rePassword']['mismatch']);
       }
     }
 
     Object.entries(this.registerForm.controls).forEach(([key, control]) => {
-      if (control.invalid && (control.dirty || control.touched || this.isSubmitted)) {
+      if (control.invalid && (control.dirty || control.touched || this.isLoading())) {
         Object.keys(control.errors || {}).forEach((errorKey) => {
           const message = this.validationMessages[key]?.[errorKey];
           if (message && !errors.includes(message)) {
@@ -118,33 +118,55 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.errorMessage = '';
-    this.isSubmitted = true;
-
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
-      this.isSubmitted = false;
       return;
     }
+
+    this.isLoading.set(true);
 
     const email = this.registerForm.get('email')?.value;
     this.registerForm.get('username')?.setValue(email.split('@')[0] || '');
 
     const { phone, country, terms, ...registerData } = this.registerForm.value;
+
     this.authService
       .postRegister(registerData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {},
+        next: () => {},
+        error: () => {
+          this.isLoading.set(false);
+        },
       });
-    this.isSubmitted = false;
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update((val) => !val);
   }
 
   toggleRePasswordVisibility(): void {
-    this.showRePassword = !this.showRePassword;
+    this.showRePassword.update((val) => !val);
+  }
+
+  /**
+   * Helper to get specific field error message
+   */
+  getFieldError(fieldName: string): string {
+    const field = this.registerForm.get(fieldName);
+    if (!field || !field.errors || !field.touched) {
+      return '';
+    }
+
+    const errorKey = Object.keys(field.errors)[0];
+    return this.validationMessages[fieldName]?.[errorKey] || '';
+  }
+
+  /**
+   * Check if a specific field has an error
+   */
+  hasFieldError(fieldName: string): boolean {
+    const field = this.registerForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
   }
 }

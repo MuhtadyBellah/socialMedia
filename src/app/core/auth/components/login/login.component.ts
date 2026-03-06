@@ -1,7 +1,7 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { CommonModule } from '@angular/common';
@@ -16,14 +16,14 @@ export class LoginComponent implements OnInit {
   private readonly formBuild = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
 
   loginForm!: FormGroup;
-  isLoading = false;
-  errorMessage = '';
 
-  // controls whether password inputs are visible
-  showPassword = false;
+  readonly isLoading = signal(false);
+  readonly showPassword = signal(false);
+  errorMessage = signal('');
+
+  readonly isSubmitDisabled = computed(() => this.isLoading());
 
   ngOnInit(): void {
     this.loginForm = this.formBuild.group({
@@ -34,26 +34,43 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.errorMessage = '';
-    this.isLoading = true;
-
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
-      this.isLoading = false;
       return;
     }
 
+    this.errorMessage.set('');
+    this.isLoading.set(true);
+
     const { email, password } = this.loginForm.value;
+
     this.authService
       .postLogin({ email, password })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (response) => {},
+        next: () => {},
+        error: () => {
+          this.isLoading.set(false);
+        },
       });
-    this.isLoading = false;
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update((val) => !val);
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.loginForm.get(fieldName);
+    if (!field || !field.errors || !field.touched) {
+      return '';
+    }
+
+    if (field.hasError('required')) {
+      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+    }
+    if (field.hasError('email')) {
+      return 'Please enter a valid email address';
+    }
+    return '';
   }
 }
