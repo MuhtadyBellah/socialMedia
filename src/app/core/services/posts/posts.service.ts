@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { DefaultResponse } from '../../models/default.interface';
+import { DefaultResponse, Paged } from '../../models/default.interface';
+import { PostResponse } from '../../models/post.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -9,18 +10,18 @@ import { DefaultResponse } from '../../models/default.interface';
 export class PostsService {
   private readonly api = inject(ApiService);
 
-  getAllPosts(params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>('posts', params);
+  getAllPosts(params?: any): Observable<PostResponse> {
+    return this.api.get<PostResponse>('posts', params);
   }
 
-  getFeed(params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>('posts/feed', { only: 'following', limit: 10, ...params });
+  getFeed(params?: any): Observable<Paged<PostResponse>> {
+    return this.api.get<Paged<PostResponse>>('posts/feed', {
+      only: 'following',
+      limit: 10,
+      ...params,
+    });
   }
 
-  /**
-   * Create a new post
-   * @param data FormData with body (text content, supports @mentions) and optional image
-   */
   postCreate(data: object): Observable<DefaultResponse> {
     return this.api.post<DefaultResponse>('posts', data);
   }
@@ -29,8 +30,8 @@ export class PostsService {
     return this.api.get<DefaultResponse>(`posts/${postId}`, params);
   }
 
-  getPostLikes(postId: string, params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>(`posts/${postId}/likes`, {
+  getPostLikes(postId: string, params?: any): Observable<Paged<DefaultResponse>> {
+    return this.api.get<Paged<DefaultResponse>>(`posts/${postId}/likes`, {
       page: 1,
       limit: 20,
       ...params,

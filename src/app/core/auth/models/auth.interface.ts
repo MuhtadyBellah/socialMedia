@@ -1,8 +1,12 @@
 import { Default, DefaultResponse } from '../../models/default.interface';
-export interface Auth {}
+export interface Auth extends DefaultResponse {
+  data: {
+    isFollowing: boolean;
+    user: UserData;
+  };
+}
 
-export interface AuthResponse {
-  default: DefaultResponse;
+export interface AuthResponse extends DefaultResponse {
   data: {
     token: string;
     tokenType: string;
@@ -29,11 +33,4 @@ export interface UserData {
   followersCount: 0;
   followingCount: 0;
   bookmarksCount: 0;
-}
-
-export interface SuggestedUser {
-  name: string;
-  handle: string;
-  avatar: string;
-  followers: number;
 }

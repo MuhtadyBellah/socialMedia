@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import { AuthResponse } from '../models/auth.interface';
+import { Auth, AuthResponse, UserData } from '../models/auth.interface';
 import { DefaultResponse } from '../../models/default.interface';
 import { BookmarkResponse } from '../../models/bookmark.interface';
 import { PostResponse } from '../../models/post.interface';
+import { SuggestionResponse } from '../../models/suggestion.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -24,20 +25,24 @@ export class AuthService {
     return this.api.patch<AuthResponse>('users/change-password', data);
   }
 
-  getProfileData(params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>('users/profile-data', params);
+  putUploadProfilePhoto(data: FormData): Observable<DefaultResponse> {
+    return this.api.put<DefaultResponse>('users/upload-photo', data);
+  }
+
+  getProfileData(params?: any): Observable<Auth> {
+    return this.api.get<Auth>('users/profile-data', params);
   }
 
   getBookmarks(params?: any): Observable<BookmarkResponse> {
     return this.api.get<BookmarkResponse>('users/bookmarks', params);
   }
 
-  getFollowSuggestions(params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>('users/suggestions', { limit: 10, ...params });
+  getFollowSuggestions(params?: any): Observable<SuggestionResponse> {
+    return this.api.get<SuggestionResponse>('users/suggestions', { limit: 10, ...params });
   }
 
-  getUserProfile(userId: string, params?: any): Observable<DefaultResponse> {
-    return this.api.get<DefaultResponse>(`users/${userId}/profile`, params);
+  getUserProfile(userId: string, params?: any): Observable<Auth> {
+    return this.api.get<Auth>(`users/${userId}/profile`, params);
   }
 
   putFollow(userId: string, data: object): Observable<DefaultResponse> {

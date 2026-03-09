@@ -60,6 +60,11 @@ export const routes: Routes = [
         title: 'Profile',
       },
       {
+        path: 'profile/:id',
+        component: ProfileComponent,
+        title: 'Profile',
+      },
+      {
         path: 'changePassword',
         component: ChangPasswordComponent,
         title: 'Change Password',

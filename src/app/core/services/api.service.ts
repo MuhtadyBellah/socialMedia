@@ -14,10 +14,6 @@ export class ApiService {
   // Cache for GET requests (key: endpoint, value: cached response)
   private cache = new Map<string, { data: Observable<any>; timestamp: number }>();
 
-  /**
-   * Clear cache entries
-   * @param endpoint - Optional: clear specific endpoint, or clear all if not provided
-   */
   clearCache(endpoint?: string): void {
     if (endpoint) {
       this.cache.delete(endpoint);
@@ -26,10 +22,6 @@ export class ApiService {
     }
   }
 
-  /**
-   * Clear cache entries related to a specific endpoint
-   * @param endpoint - The endpoint that was modified
-   */
   private clearRelatedCache(endpoint: string): void {
     const baseResource = endpoint.split('/')[0];
     for (const key of this.cache.keys()) {
@@ -39,10 +31,6 @@ export class ApiService {
     }
   }
 
-  /**
-   * GET request with caching support
-   * Authorization header is handled by headersInterceptor
-   */
   get<T>(endpoint: string, params?: any): Observable<T> {
     const cachedData = this.cache.get(endpoint);
     if (cachedData && Date.now() - cachedData.timestamp < this.CACHE_TTL) {
@@ -59,37 +47,21 @@ export class ApiService {
     return response;
   }
 
-  /**
-   * POST request with cache invalidation
-   * Authorization header is handled by headersInterceptor
-   */
   post<T>(endpoint: string, data?: object): Observable<T> {
     this.clearRelatedCache(endpoint);
     return this.http.post<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * PUT request with cache invalidation
-   * Authorization header is handled by headersInterceptor
-   */
   put<T>(endpoint: string, data?: object): Observable<T> {
     this.clearRelatedCache(endpoint);
     return this.http.put<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * PATCH request with cache invalidation
-   * Authorization header is handled by headersInterceptor
-   */
   patch<T>(endpoint: string, data?: object): Observable<T> {
     this.clearRelatedCache(endpoint);
     return this.http.patch<T>(`${this.baseUrl}${endpoint}`, data);
   }
 
-  /**
-   * DELETE request with cache invalidation
-   * Authorization header is handled by headersInterceptor
-   */
   delete<T>(endpoint: string): Observable<T> {
     this.clearRelatedCache(endpoint);
     return this.http.delete<T>(`${this.baseUrl}${endpoint}`);
