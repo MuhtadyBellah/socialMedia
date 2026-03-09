@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { CommonModule } from '@angular/common';
 

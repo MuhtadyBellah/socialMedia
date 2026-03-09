@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../services/api.service';
-import { Auth, AuthResponse, UserData } from '../models/auth.interface';
+import { ApiService } from '../api.service';
+import { Auth, AuthResponse, UserData } from '../../models/auth.interface';
 import { DefaultResponse } from '../../models/default.interface';
 import { BookmarkResponse } from '../../models/bookmark.interface';
 import { PostResponse } from '../../models/post.interface';

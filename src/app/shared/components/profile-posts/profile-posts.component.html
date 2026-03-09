@@ -1,5 +1,11 @@
-<div class="space-y-3">
-  <p class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
-    You have not posted yet.
-  </p>
-</div>
+@for (post of posts; track $index) {
+  <div class="space-y-4">
+    <app-single-post></app-single-post>
+  </div>
+} @empty {
+  <div class="space-y-3">
+    <p class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+      {{ mode === 'posts' ? 'You have not posted yet.' : 'No saved posts yet.' }}
+    </p>
+  </div>
+}

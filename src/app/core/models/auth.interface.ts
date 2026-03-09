@@ -1,4 +1,4 @@
-import { Default, DefaultResponse } from '../../models/default.interface';
+import { Default, DefaultResponse } from './default.interface';
 export interface Auth extends DefaultResponse {
   data: {
     isFollowing: boolean;

@@ -54,11 +54,6 @@ export class PostsService {
     return this.api.put<DefaultResponse>(`posts/${postId}/bookmark`, data);
   }
 
-  /**
-   * Share a post
-   * @param postId The post to share
-   * @param data Body with optional text content
-   */
   postShare(postId: string, data: object): Observable<DefaultResponse> {
     return this.api.post<DefaultResponse>(`posts/${postId}/share`, data);
   }

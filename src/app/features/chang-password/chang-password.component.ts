@@ -1,3 +1,4 @@
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -9,11 +10,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../core/auth/services/auth.service';
 import { environment } from '../../../environments/environment.development';
-import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
-import { NgIf, NgClass, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chang-password',

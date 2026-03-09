@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../../environments/environment.development';
 
@@ -149,9 +149,6 @@ export class RegisterComponent implements OnInit {
     this.showRePassword.update((val) => !val);
   }
 
-  /**
-   * Helper to get specific field error message
-   */
   getFieldError(fieldName: string): string {
     const field = this.registerForm.get(fieldName);
     if (!field || !field.errors || !field.touched) {
@@ -162,9 +159,6 @@ export class RegisterComponent implements OnInit {
     return this.validationMessages[fieldName]?.[errorKey] || '';
   }
 
-  /**
-   * Check if a specific field has an error
-   */
   hasFieldError(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
     return !!(field && field.invalid && field.touched);

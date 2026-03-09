@@ -1,15 +1,14 @@
+import { Routes } from '@angular/router';
 import { LoginComponent } from './core/auth/components/login/login.component';
 import { RegisterComponent } from './core/auth/components/register/register.component';
 import { authGuard } from './core/guards/auth-guard';
 import { ChangPasswordComponent } from './features/chang-password/chang-password.component';
-import { FeedComponent } from './features/feed/feed.component';
 import { HomeComponent } from './features/home/home.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { Routes } from '@angular/router';
 import { SuggestedComponent } from './shared/components/suggested/suggested.component';
 
 export const routes: Routes = [
@@ -51,6 +50,22 @@ export const routes: Routes = [
       },
       {
         path: 'feed',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+
+      {
+        path: 'my-posts',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+      {
+        path: 'community',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+      {
+        path: 'saved',
         redirectTo: 'home',
         pathMatch: 'full',
       },

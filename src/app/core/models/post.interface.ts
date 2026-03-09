@@ -1,4 +1,4 @@
-import { UserData } from '../auth/models/auth.interface';
+import { UserData } from './auth.interface';
 import { DefaultResponse } from './default.interface';
 
 export interface Post {}
@@ -9,7 +9,7 @@ export interface PostResponse extends DefaultResponse {
   };
 }
 
-interface PostData {
+export interface PostData {
   _id: string;
   body: string;
   image: string;

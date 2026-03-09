@@ -1,10 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../../environments/environment.development';
-import { NotificationsService } from '../../core/services/notifications/notifications.service';
-import { UserData } from '../../core/auth/models/auth.interface';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { environment } from '../../../environments/environment.development';
+import { UserData } from '../../core/models/auth.interface';
+import { NotificationsService } from '../../core/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,7 +17,7 @@ export class NavbarComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly notificationsService = inject(NotificationsService);
 
-  notificationCount: number = 0;
+  notificationCount = signal<number>(0);
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
 
@@ -39,7 +39,7 @@ export class NavbarComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: any) => {
-          this.notificationCount = response.data.unreadCount | 0;
+          this.notificationCount.set(response.data.unreadCount | 0);
         },
       });
   }

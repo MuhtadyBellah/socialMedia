@@ -1,7 +1,7 @@
-import { Component, inject, DestroyRef, computed, signal } from '@angular/core';
-import { ActivatedRoute, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({

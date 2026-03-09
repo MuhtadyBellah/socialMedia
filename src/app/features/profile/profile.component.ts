@@ -1,31 +1,26 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  inject,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
-import { UserData } from '../../core/auth/models/auth.interface';
-import { ProfilePhotoComponent } from '../../shared/components/profile-photo/profile-photo.component';
-import { AuthService } from '../../core/auth/services/auth.service';
+import { NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { forkJoin, switchMap } from 'rxjs';
+import { UserData } from '../../core/models/auth.interface';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { ProfilePhotoComponent } from '../../shared/components/profile-photo/profile-photo.component';
+import { ProfilePostsComponent } from '../../shared/components/profile-posts/profile-posts.component';
 
 @Component({
   selector: 'app-profile',
-  imports: [ProfilePhotoComponent],
+  imports: [ProfilePhotoComponent, NgClass, ProfilePostsComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   currentUser: UserData | null = null;
-  posts: any = 0;
-  bookmarks: any = 0;
+  posts: any = null;
+  bookmarks: any = null;
   isViewed = false;
 
   ngOnInit(): void {
@@ -33,25 +28,27 @@ export class ProfileComponent implements OnInit {
       .getProfileData()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap((response: any) => {
+        switchMap((profileResponse: any) => {
           setTimeout(() => {
-            this.currentUser = response.data.user;
+            this.currentUser = profileResponse.data.user;
           }, 3000);
+          const userId = profileResponse.data.user.id || profileResponse.data.user._id;
 
-          const userId = response.data.user.id || response.data.user._id;
-          return this.authService.getUserPosts(userId);
-        }),
-        switchMap((postsResponse: any) => {
-          setTimeout(() => {
-            this.posts = postsResponse.data.posts;
-          }, 3000);
-
-          return this.authService.getBookmarks();
+          return forkJoin({
+            postsData: this.authService.getUserPosts(userId),
+            bookmarksData: this.authService.getBookmarks(),
+          });
         }),
       )
       .subscribe({
-        next: (response: any) => {
-          this.bookmarks = response.data.bookmarks;
+        next: (result: any) => {
+          this.posts = result.postsData.data.posts;
+          this.bookmarks = result.bookmarksData.data.bookmarks;
+
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error fetching profile data:', error);
         },
       });
   }

@@ -1,7 +1,6 @@
-import { AfterViewInit, Component, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
-import { NavbarComponent } from './features/navbar/navbar.component';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({

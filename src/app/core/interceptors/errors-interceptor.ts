@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, tap, throwError } from 'rxjs';
-import { ErrorHandlerService } from '../services/error-handler.service';
 import { Router } from '@angular/router';
+import { catchError, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { ErrorHandlerService } from '../services/error-handler.service';
 
 export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
   const errorHandler = inject(ErrorHandlerService);
@@ -11,6 +11,8 @@ export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     tap((response: any) => {
+      console.log(`Request ${req.url} came from: Unknown or Service`, response);
+
       if (errorHandler.shouldShowSuccessNotification(req.url, req.method)) {
         errorHandler.handleSuccess(response);
       }

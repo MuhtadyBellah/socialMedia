@@ -1,4 +1,4 @@
-import { UserData } from '../auth/models/auth.interface';
+import { UserData } from './auth.interface';
 import { Default, DefaultResponse } from './default.interface';
 export interface Suggestion {}
 
