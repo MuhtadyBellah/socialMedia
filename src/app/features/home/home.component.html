@@ -5,11 +5,10 @@
         type="button"
         class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
         (click)="loadFeed()"
-        [disabled]="isLoading()"
         [ngClass]="
           activeTab() === 'feed'
             ? 'bg-[#e7f3ff] text-[#1877f2]'
-            : 'text-slate-700 hover:bg-slate-100'
+            : 'mt-1 text-slate-700 hover:bg-slate-100'
         "
         aria-label="View feed"
       >
@@ -31,19 +30,16 @@
           <path
             d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"
           ></path>
-          <rect width="8" height="4" x="10" y="6" rx="1"></rect>
-        </svg>
-        Feed
-      </button>
-      <button
+          <rect width="8" height="4" x="10" y="6" rx="1"></rect></svg
+        >Feed</button
+      ><button
         type="button"
         class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
         (click)="loadMyPosts()"
-        [disabled]="isLoading()"
         [ngClass]="
           activeTab() === 'myPosts'
             ? 'bg-[#e7f3ff] text-[#1877f2]'
-            : 'text-slate-700 hover:bg-slate-100'
+            : 'mt-1 text-slate-700 hover:bg-slate-100'
         "
         aria-label="View my posts"
       >
@@ -65,19 +61,16 @@
           ></path>
           <path d="M20 2v4"></path>
           <path d="M22 4h-4"></path>
-          <circle cx="4" cy="20" r="2"></circle>
-        </svg>
-        My Posts
-      </button>
-      <button
+          <circle cx="4" cy="20" r="2"></circle></svg
+        >My Posts</button
+      ><button
         type="button"
         class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
         (click)="loadALLPosts()"
-        [disabled]="isLoading()"
         [ngClass]="
           activeTab() === 'community'
             ? 'bg-[#e7f3ff] text-[#1877f2]'
-            : 'text-slate-700 hover:bg-slate-100'
+            : 'mt-1 text-slate-700 hover:bg-slate-100'
         "
         aria-label="View community posts"
       >
@@ -99,19 +92,16 @@
             d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"
           ></path>
           <path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"></path>
-          <circle cx="12" cy="12" r="10"></circle>
-        </svg>
-        Community
-      </button>
-      <button
+          <circle cx="12" cy="12" r="10"></circle></svg
+        >Community</button
+      ><button
         type="button"
         class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
         (click)="loadSavedPosts()"
-        [disabled]="isLoading()"
         [ngClass]="
           activeTab() === 'saved'
             ? 'bg-[#e7f3ff] text-[#1877f2]'
-            : 'text-slate-700 hover:bg-slate-100'
+            : 'mt-1 text-slate-700 hover:bg-slate-100'
         "
         aria-label="View saved posts"
       >
@@ -130,13 +120,11 @@
         >
           <path
             d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"
-          ></path>
-        </svg>
-        Saved
+          ></path></svg
+        >Saved
       </button>
     </div>
   </aside>
-
   <section class="space-y-4">
     <div class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm xl:hidden">
       <div class="grid grid-cols-2 gap-2">
@@ -144,11 +132,10 @@
           type="button"
           class="flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
           (click)="loadFeed()"
-          [disabled]="isLoading()"
           [ngClass]="
             activeTab() === 'feed'
               ? 'bg-[#e7f3ff] text-[#1877f2]'
-              : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              : 'bg-slate-50 mt-1 text-slate-700 hover:bg-slate-100'
           "
           aria-label="View feed"
         >
@@ -170,19 +157,16 @@
             <path
               d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"
             ></path>
-            <rect width="8" height="4" x="10" y="6" rx="1"></rect>
-          </svg>
-          Feed
-        </button>
-        <button
+            <rect width="8" height="4" x="10" y="6" rx="1"></rect></svg
+          >Feed</button
+        ><button
           type="button"
           class="flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
           (click)="loadMyPosts()"
-          [disabled]="isLoading()"
           [ngClass]="
             activeTab() === 'myPosts'
               ? 'bg-[#e7f3ff] text-[#1877f2]'
-              : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              : 'bg-slate-50 mt-1 text-slate-700 hover:bg-slate-100'
           "
           aria-label="View my posts"
         >
@@ -204,19 +188,16 @@
             ></path>
             <path d="M20 2v4"></path>
             <path d="M22 4h-4"></path>
-            <circle cx="4" cy="20" r="2"></circle>
-          </svg>
-          My Posts
-        </button>
-        <button
+            <circle cx="4" cy="20" r="2"></circle></svg
+          >My Posts</button
+        ><button
           type="button"
           class="flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
           (click)="loadALLPosts()"
-          [disabled]="isLoading()"
           [ngClass]="
             activeTab() === 'community'
               ? 'bg-[#e7f3ff] text-[#1877f2]'
-              : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              : 'bg-slate-50 mt-1 text-slate-700 hover:bg-slate-100'
           "
           aria-label="View community posts"
         >
@@ -238,19 +219,16 @@
               d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"
             ></path>
             <path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"></path>
-            <circle cx="12" cy="12" r="10"></circle>
-          </svg>
-          Community
-        </button>
-        <button
+            <circle cx="12" cy="12" r="10"></circle></svg
+          >Community</button
+        ><button
           type="button"
           class="flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50"
           (click)="loadSavedPosts()"
-          [disabled]="isLoading()"
           [ngClass]="
             activeTab() === 'saved'
               ? 'bg-[#e7f3ff] text-[#1877f2]'
-              : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              : 'bg-slate-50 mt-1 text-slate-700 hover:bg-slate-100'
           "
           aria-label="View saved posts"
         >
@@ -269,9 +247,8 @@
           >
             <path
               d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"
-            ></path>
-          </svg>
-          Saved
+            ></path></svg
+          >Saved
         </button>
       </div>
     </div>
@@ -284,8 +261,8 @@
           class="inline-flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm transition hover:bg-slate-50"
           aria-label="View suggested friends"
         >
-          <span class="inline-flex items-center gap-2 text-sm font-extrabold text-slate-900">
-            <svg
+          <span class="inline-flex items-center gap-2 text-sm font-extrabold text-slate-900"
+            ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="17"
               height="17"
@@ -301,12 +278,10 @@
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
               <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
               <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-            </svg>
-            Suggested Friends
-          </span>
-          <span class="inline-flex items-center gap-2">
-            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
+              <circle cx="9" cy="7" r="4"></circle></svg
+            >Suggested Friends</span
+          ><span class="inline-flex items-center gap-2"
+            ><span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
               {{ suggestions().length }}
             </span>
             <span class="text-xs font-bold text-[#1877f2]">Show</span>
@@ -382,10 +357,9 @@
         <p class="text-sm font-semibold text-slate-600">Loading posts...</p>
       </div>
     } @else {
-      <app-feed [posts]="posts()"></app-feed>
+      <app-feed [posts]="posts"></app-feed>
     }
   </section>
-
   <aside class="hidden h-fit xl:sticky xl:top-21 xl:block">
     <app-suggested [mode]="'sidebar'" [users]="suggestions()"></app-suggested>
   </aside>

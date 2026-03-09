@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { UserData } from '../../core/models/auth.interface';
@@ -14,7 +15,7 @@ type TabType = 'feed' | 'myPosts' | 'community' | 'saved';
 
 @Component({
   selector: 'app-home',
-  imports: [FeedComponent, SuggestedComponent, CommonModule],
+  imports: [FeedComponent, SuggestedComponent, CommonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -33,7 +34,6 @@ export class HomeComponent implements OnInit {
   readonly errorMessage = signal('');
 
   readonly isEmpty = computed(() => !this.isLoading() && this.posts().length === 0);
-  readonly canLoadMore = signal(false);
 
   ngOnInit(): void {
     this.loadCurrentUser();
@@ -70,7 +70,6 @@ export class HomeComponent implements OnInit {
 
   loadFeed(): void {
     if (this.isLoading()) return;
-
     this.activeTab.set('feed');
     this.hasError.set(false);
     this.isLoading.set(true);

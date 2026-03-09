@@ -78,7 +78,7 @@
         value=""
     /></label>
     <div [ngClass]="mode === 'sidebar' ? 'space-y-3' : 'grid gap-3 sm:grid-cols-2'">
-      <!-- @for (user of users; track user.id) {
+      @for (user of users; track $index) {
         <article
           class="rounded-xl border border-slate-200"
           [ngClass]="mode === 'sidebar' ? 'p-2.5' : 'p-3'"
@@ -90,14 +90,14 @@
             >
               <img
                 [alt]="user.name"
-                [src]="user.avatar"
+                [src]="user.photo"
                 [ngClass]="mode === 'sidebar' ? 'h-10 w-10' : 'h-12 w-12 rounded-full object-cover'"
               />
               <div class="min-w-0">
                 <p class="truncate text-sm font-bold text-slate-900 hover:underline">
                   {{ user.name }}
                 </p>
-                <p class="truncate text-xs text-slate-500">{{ user.handle }}</p>
+                <p class="truncate text-xs text-slate-500">{{ user.email }}</p>
               </div></button
             ><button
               class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition disabled:opacity-60 bg-[#e7f3ff] text-[#1877f2] hover:bg-[#d8ebff]"
@@ -124,11 +124,11 @@
           </div>
           <div class="mt-2 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
             <span class="rounded-full bg-slate-100 px-2 py-0.5"
-              >{{ user.followers }} followers</span
+              >{{ user.followingCount }} followers</span
             >
           </div>
         </article>
-      } -->
+      }
     </div>
     <button
       class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
