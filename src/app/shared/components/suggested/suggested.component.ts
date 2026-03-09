@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { SuggestionResponse } from '../../../core/models/suggestion.interface';
+import { UserData } from '../../../core/models/auth.interface';
 
 @Component({
   selector: 'app-suggested',
@@ -13,7 +13,7 @@ export class SuggestedComponent {
   @Input() mode: 'sidebar' | 'full' = 'full';
   private readonly router = inject(Router);
 
-  @Input() users: SuggestionResponse[] = [];
+  @Input() users: Partial<UserData>[] = [];
 
   viewMore() {
     if (this.mode === 'sidebar') {
