@@ -1,24 +1,24 @@
 <article class="overflow-visible rounded-xl border border-slate-200 bg-white shadow-sm">
   <div class="p-4">
     <div class="flex items-center gap-3">
-      <a [href]="'#/profile/' + post.user._id" class="shrink-0" aria-label="Go to profile">
+      <a [href]="'#/profile/' + localPost().user._id" class="shrink-0" aria-label="Go to profile">
         <img
-          [alt]="post.user.name"
+          [alt]="localPost().user.name"
           class="h-11 w-11 rounded-full object-cover"
-          [src]="post.user.photo || ''"
+          [src]="localPost().user.photo || ''"
         />
       </a>
 
       <div class="min-w-0 flex-1">
         <a
-          [href]="'#/profile/' + post.user._id"
+          [href]="'#/profile/' + localPost().user._id"
           class="truncate text-sm font-bold text-slate-900 hover:underline"
           aria-label="Go to profile"
         >
-          {{ post.user.name }}
+          {{ localPost().user.name }}
         </a>
         <div class="flex flex-wrap items-center gap-1 text-xs text-slate-500">
-          <span>@{{ post.user.username }}</span>
+          <span>@{{ localPost().user.username }}</span>
           <span>·</span>
           <button
             type="button"
@@ -49,7 +49,7 @@
               <path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"></path>
               <circle cx="12" cy="12" r="10"></circle>
             </svg>
-            <span>{{ post.privacy || 'Public' }}</span>
+            <span>{{ localPost().privacy || 'Public' }}</span>
           </span>
         </div>
       </div>
@@ -200,16 +200,16 @@
 
     <div class="mt-3">
       <p class="whitespace-pre-wrap text-sm leading-relaxed text-slate-900">
-        {{ post.body }}
+        {{ localPost().body }}
       </p>
     </div>
 
-    @if (post.image) {
+    @if (localPost().image) {
       <div class="mt-3 rounded-lg overflow-hidden">
         <img
-          [alt]="post.body || 'Post image'"
+          [alt]="localPost().body || 'Post image'"
           class="w-full h-auto object-cover max-h-96"
-          [src]="post.image"
+          [src]="localPost().image"
         />
       </div>
     }
@@ -284,7 +284,7 @@
 
         <button
           class="rounded-md px-2 py-1 text-xs font-bold text-[#1877f2] hover:bg-[#e7f3ff]"
-          [routerLink]="['/posts', post._id]"
+          [routerLink]="['/posts', localPost()._id]"
         >
           View details
         </button>
@@ -419,5 +419,5 @@
 </article>
 
 @if (showComments()) {
-  <app-comment-posts [postId]="post._id"></app-comment-posts>
+  <app-comment-posts [postId]="localPost()._id"></app-comment-posts>
 }

@@ -4,13 +4,14 @@ import {
   DestroyRef,
   Input,
   OnChanges,
+  OnInit,
   SimpleChanges,
   computed,
   inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostData } from '../../../core/models/post.interface';
 import { PostsService } from '../../../core/services/posts/posts.service';
 import { CommentPostsComponent } from '../comment-posts/comment-posts.component';
@@ -21,9 +22,10 @@ import { CommentPostsComponent } from '../comment-posts/comment-posts.component'
   templateUrl: './single-post.component.html',
   styleUrl: './single-post.component.css',
 })
-export class SinglePostComponent implements OnChanges {
+export class SinglePostComponent implements OnInit, OnChanges {
   private readonly postsService = inject(PostsService);
   private readonly destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
 
   @Input() post!: PostData;
 
@@ -41,6 +43,16 @@ export class SinglePostComponent implements OnChanges {
   readonly likeCount = computed(() => this.localPost().likesCount || 0);
   readonly commentCount = computed(() => this.localPost().commentsCount || 0);
   readonly shareCount = computed(() => this.localPost().sharesCount || 0);
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id && !this.post) {
+      this.postsService.getSinglePost(id).subscribe((res) => {
+        this._localPost.set(res.data.post);
+      });
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['post']) {
