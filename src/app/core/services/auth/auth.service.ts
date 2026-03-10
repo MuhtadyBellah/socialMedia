@@ -1,11 +1,12 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../api.service';
+import { environment } from '../../../../environments/environment.development';
 import { Auth, AuthResponse, UserData } from '../../models/auth.interface';
-import { DefaultResponse } from '../../models/default.interface';
 import { BookmarkResponse } from '../../models/bookmark.interface';
+import { DefaultResponse } from '../../models/default.interface';
 import { PostResponse } from '../../models/post.interface';
 import { SuggestionResponse } from '../../models/suggestion.interface';
+import { ApiService } from '../api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,12 +14,61 @@ import { SuggestionResponse } from '../../models/suggestion.interface';
 export class AuthService {
   private readonly api = inject(ApiService);
 
+  private readonly _currentUser = signal<UserData | null>(null);
+  private readonly _isAuthenticated = signal(false);
+  private readonly _isLoading = signal(false);
+
+  readonly currentUser = this._currentUser.asReadonly();
+  readonly isAuthenticated = this._isAuthenticated.asReadonly();
+  readonly isLoading = this._isLoading.asReadonly();
+  readonly userId = computed(() => this._currentUser()?._id || null);
+
+  constructor() {
+    this.loadStoredUserData();
+  }
+
+  private loadStoredUserData(): void {
+    const storedToken = localStorage.getItem(environment.userToken);
+    const storedUserData = localStorage.getItem(environment.userData);
+
+    if (storedToken && storedUserData) {
+      try {
+        const userData = JSON.parse(storedUserData) as UserData;
+        this._currentUser.set(userData);
+        this._isAuthenticated.set(true);
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+        this.clearUserData();
+      }
+    }
+  }
+
+  private clearUserData(): void {
+    localStorage.removeItem(environment.userToken);
+    localStorage.removeItem(environment.userData);
+    this._currentUser.set(null);
+    this._isAuthenticated.set(false);
+  }
+
+  setUserData(token: string, userData: UserData): void {
+    localStorage.setItem(environment.userToken, token);
+    localStorage.setItem(environment.userData, JSON.stringify(userData));
+    this._currentUser.set(userData);
+    this._isAuthenticated.set(true);
+  }
+
   postRegister(data: object): Observable<AuthResponse> {
+    this._isLoading.set(true);
     return this.api.post<AuthResponse>('users/signup', data);
   }
 
   postLogin(data: object): Observable<AuthResponse> {
+    this._isLoading.set(true);
     return this.api.post<AuthResponse>('users/signin', data);
+  }
+
+  logout(): void {
+    this.clearUserData();
   }
 
   patchChangePassword(data: object): Observable<AuthResponse> {

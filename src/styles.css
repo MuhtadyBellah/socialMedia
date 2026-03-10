@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'flowbite/src/themes/default';
+@import '@fortawesome/fontawesome-free/css/all.css';
 @plugin "flowbite/plugin";
 @theme {
   --color-main: #00298d;

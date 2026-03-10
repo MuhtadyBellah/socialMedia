@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { environment } from '../../../environments/environment.development';
-import { UserData } from '../../core/models/auth.interface';
+import { interval } from 'rxjs';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { NotificationsService } from '../../core/services/notifications/notifications.service';
 
 @Component({
@@ -16,30 +16,32 @@ export class NavbarComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly notificationsService = inject(NotificationsService);
+  private readonly authService = inject(AuthService);
 
   notificationCount = signal<number>(0);
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
 
-  currentUser: UserData | null = null;
+  readonly currentUser = this.authService.currentUser;
 
   ngOnInit(): void {
-    const storedData = localStorage.getItem(environment.userData);
-    if (storedData) {
-      try {
-        this.currentUser = JSON.parse(storedData);
-      } catch (error) {
-        console.error('Error parsing user data', error);
-        this.currentUser = null;
-      }
-    }
+    this.loadNotificationCount();
 
+    interval(30000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadNotificationCount());
+  }
+
+  private loadNotificationCount(): void {
     this.notificationsService
       .getUnreadCount()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: any) => {
-          this.notificationCount.set(response.data.unreadCount | 0);
+          this.notificationCount.set(response.data?.unreadCount || 0);
+        },
+        error: () => {
+          this.notificationCount.set(0);
         },
       });
   }
@@ -59,6 +61,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(): void {
+    this.authService.logout();
     this.router.navigate(['/auth/login']);
   }
 

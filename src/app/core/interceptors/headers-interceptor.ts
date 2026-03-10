@@ -13,10 +13,15 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
     }
   }
 
-  req.clone({
-    setHeaders: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const isFormData = req.body instanceof FormData;
+
+  if (!isFormData) {
+    req = req.clone({
+      setHeaders: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
   return next(req);
 };

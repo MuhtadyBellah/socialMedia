@@ -9,6 +9,7 @@ import { NotificationsComponent } from './features/notifications/notifications.c
 import { ProfileComponent } from './features/profile/profile.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { SinglePostComponent } from './shared/components/single-post/single-post.component';
 import { SuggestedComponent } from './shared/components/suggested/suggested.component';
 
 export const routes: Routes = [
@@ -78,6 +79,11 @@ export const routes: Routes = [
         path: 'profile/:id',
         component: ProfileComponent,
         title: 'Profile',
+      },
+      {
+        path: 'posts/:id',
+        component: SinglePostComponent,
+        title: 'Post Detail',
       },
       {
         path: 'changePassword',

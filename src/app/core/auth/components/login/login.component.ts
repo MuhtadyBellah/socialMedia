@@ -1,10 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
-import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
 
   readonly isLoading = signal(false);
   readonly showPassword = signal(false);
-  errorMessage = signal('');
+  readonly errorMessage = signal('');
 
   readonly isSubmitDisabled = computed(() => this.isLoading());
 
@@ -48,9 +48,20 @@ export class LoginComponent implements OnInit {
       .postLogin({ email, password })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {},
-        error: () => {
+        next: () => {
           this.isLoading.set(false);
+        },
+        error: (error) => {
+          this.isLoading.set(false);
+          if (error.status === 400) {
+            this.errorMessage.set('Incorrect email or password');
+          } else if (error.status === 401) {
+            this.errorMessage.set('Invalid credentials');
+          } else if (error.status === 0) {
+            this.errorMessage.set('Unable to connect to server. Please check your connection.');
+          } else {
+            this.errorMessage.set('Login failed. Please try again.');
+          }
         },
       });
   }

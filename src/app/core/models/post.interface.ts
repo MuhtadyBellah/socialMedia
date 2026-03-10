@@ -1,4 +1,3 @@
-import { UserData } from './auth.interface';
 import { DefaultResponse } from './default.interface';
 
 export interface Post {}
@@ -14,7 +13,12 @@ export interface PostData {
   body: string;
   image: string;
   privacy: string;
-  user: Partial<UserData>;
+  user: {
+    _id: string;
+    name: string;
+    username: string;
+    photo: string;
+  };
   sharedPost: {};
   likes: [];
   createdAt: string;
@@ -24,4 +28,5 @@ export interface PostData {
   likesCount: number;
   isShare: boolean;
   bookmarked: boolean;
+  isLiked: boolean | any;
 }

@@ -1,6 +1,6 @@
 <app-create-post></app-create-post>
 
-@for (post of posts(); track post._id) {
+@for (post of posts; track post._id) {
   <div class="space-y-4">
     <app-single-post [post]="post"></app-single-post>
   </div>
@@ -24,5 +24,11 @@
     </svg>
     <p class="text-slate-600 font-medium">No posts in your feed yet</p>
     <p class="text-slate-500 text-sm mt-1">Follow more users to see their posts</p>
+  </div>
+}
+
+@if (posts.length > 0) {
+  <div class="flex min-h-10 items-center justify-center">
+    <span class="text-xs font-semibold text-slate-400">You reached the end</span>
   </div>
 }

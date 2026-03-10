@@ -357,10 +357,10 @@
         <p class="text-sm font-semibold text-slate-600">Loading posts...</p>
       </div>
     } @else {
-      <app-feed [posts]="posts"></app-feed>
+      <app-feed [posts]="posts()"></app-feed>
     }
   </section>
   <aside class="hidden h-fit xl:sticky xl:top-21 xl:block">
-    <app-suggested [mode]="'sidebar'" [users]="suggestions()"></app-suggested>
+    <app-suggested [mode]="'sidebar'"></app-suggested>
   </aside>
 </div>

@@ -10,8 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { environment } from '../../../../environments/environment.development';
-import { UserData } from '../../../core/models/auth.interface';
+import { AuthService } from '../../../core/services/auth/auth.service';
 import { PostsService } from '../../../core/services/posts/posts.service';
 
 @Component({
@@ -22,38 +21,25 @@ import { PostsService } from '../../../core/services/posts/posts.service';
 })
 export class CreatePostComponent implements OnInit {
   private readonly postsService = inject(PostsService);
+  private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
   fileInputRef = viewChild<ElementRef<HTMLInputElement>>('fileInput');
   textAreaRef = viewChild<ElementRef<HTMLTextAreaElement>>('textArea');
 
-  readonly currentUser = signal<UserData | null>(null);
+  readonly currentUser = this.authService.currentUser;
 
   readonly imagePreviewUrl = signal<string | null>(null);
   readonly isLoading = signal(false);
   readonly postText = signal('');
+  readonly errorMessage = signal('');
 
   readonly isSubmitDisabled = computed(() => {
     const text = this.postText().trim();
     return !text || this.isLoading();
   });
 
-  ngOnInit(): void {
-    this.loadCurrentUser();
-  }
-
-  private loadCurrentUser(): void {
-    const storedData = localStorage.getItem(environment.userData);
-    if (storedData) {
-      try {
-        const userData = JSON.parse(storedData) as UserData;
-        this.currentUser.set(userData);
-      } catch (error) {
-        console.error('Error parsing user data', error);
-        this.currentUser.set(null);
-      }
-    }
-  }
+  ngOnInit(): void {}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -91,9 +77,11 @@ export class CreatePostComponent implements OnInit {
     const postTextValue = this.textAreaRef()?.nativeElement.value || '';
 
     if (!postTextValue.trim()) {
+      this.errorMessage.set('Please write something before posting');
       return;
     }
 
+    this.errorMessage.set('');
     this.isLoading.set(true);
 
     const fileInputElement = this.fileInputRef()?.nativeElement;
@@ -114,9 +102,22 @@ export class CreatePostComponent implements OnInit {
           this.postText.set('');
           this.removeImage();
           this.isLoading.set(false);
+          this.errorMessage.set('');
         },
-        error: () => {
+        error: (error) => {
           this.isLoading.set(false);
+
+          if (error.status === 400) {
+            this.errorMessage.set('Invalid post data. Please check your content and try again.');
+          } else if (error.status === 401) {
+            this.errorMessage.set('You must be logged in to create a post.');
+          } else if (error.status === 413) {
+            this.errorMessage.set('Image file is too large. Please choose a smaller image.');
+          } else if (error.status === 0) {
+            this.errorMessage.set('Unable to connect to server. Please check your connection.');
+          } else {
+            this.errorMessage.set('Failed to create post. Please try again.');
+          }
         },
       });
   }

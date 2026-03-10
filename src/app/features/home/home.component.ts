@@ -3,7 +3,6 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
 import { UserData } from '../../core/models/auth.interface';
 import { PostData } from '../../core/models/post.interface';
 import { AuthService } from '../../core/services/auth/auth.service';
@@ -28,7 +27,8 @@ export class HomeComponent implements OnInit {
   readonly activeTab = signal<TabType>('feed');
   readonly isLoading = signal(false);
   readonly suggestions = signal<Partial<UserData>[]>([]);
-  readonly currentUser = signal<UserData | null>(null);
+
+  readonly currentUser = this.authService.currentUser;
 
   readonly hasError = signal(false);
   readonly errorMessage = signal('');
@@ -36,22 +36,8 @@ export class HomeComponent implements OnInit {
   readonly isEmpty = computed(() => !this.isLoading() && this.posts().length === 0);
 
   ngOnInit(): void {
-    this.loadCurrentUser();
     this.loadSuggestions();
     this.loadFeed();
-  }
-
-  private loadCurrentUser(): void {
-    const storedData = localStorage.getItem(environment.userData);
-    if (storedData) {
-      try {
-        const userData = JSON.parse(storedData) as UserData;
-        this.currentUser.set(userData);
-      } catch (error) {
-        console.error('Error parsing user data', error);
-        this.currentUser.set(null);
-      }
-    }
   }
 
   private loadSuggestions(): void {
@@ -167,7 +153,7 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          this.posts.set(response.data?.posts || []);
+          this.posts.set(response.data?.bookmarks || []);
           this.hasError.set(false);
         },
         error: () => {

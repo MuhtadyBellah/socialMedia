@@ -117,11 +117,11 @@
         [attr.aria-expanded]="isProfileDropdownOpen()"
       >
         <img
-          [alt]="currentUser?.name"
+          [alt]="currentUser()!.name"
           class="h-8 w-8 rounded-full object-cover"
-          [src]="currentUser?.photo"
+          [src]="currentUser()!.photo"
         /><span class="hidden max-w-35 truncate text-sm font-semibold text-slate-800 md:block">{{
-          currentUser?.name
+          currentUser()!.name
         }}</span
         ><svg
           xmlns="http://www.w3.org/2000/svg"

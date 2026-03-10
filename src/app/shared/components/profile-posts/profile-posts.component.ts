@@ -8,6 +8,6 @@ import { SinglePostComponent } from '../single-post/single-post.component';
   styleUrl: './profile-posts.component.css',
 })
 export class ProfilePostsComponent {
-  @Input({ required: true }) mode: 'posts' | 'saved' = 'posts';
-  @Input() posts = [];
+  @Input({ required: true }) mode: 'posts' | 'bookmarks' = 'posts';
+  @Input() posts: any[] = [];
 }

@@ -1,8 +1,11 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, switchMap } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { UserData } from '../../core/models/auth.interface';
+import { BookmarkData } from '../../core/models/bookmark.interface';
+import { PostData } from '../../core/models/post.interface';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { ProfilePhotoComponent } from '../../shared/components/profile-photo/profile-photo.component';
 import { ProfilePostsComponent } from '../../shared/components/profile-posts/profile-posts.component';
@@ -16,40 +19,74 @@ import { ProfilePostsComponent } from '../../shared/components/profile-posts/pro
 export class ProfileComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
-  private readonly cdr = inject(ChangeDetectorRef);
 
-  currentUser: UserData | null = null;
-  posts: any = null;
-  bookmarks: any = null;
-  isViewed = false;
+  currentUser = signal<UserData | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly posts = signal<PostData[]>([]);
+  readonly bookmarks = signal<BookmarkData[]>([]);
+  readonly activeTab = signal<'posts' | 'bookmarks'>('posts');
+  readonly isViewed = signal(false);
+
+  readonly hasPosts = computed(() => this.posts().length >= 0);
+  readonly hasBookmarks = computed(() => this.bookmarks().length >= 0);
+  readonly isEmpty = computed(
+    () => !this.isLoading() && !this.hasPosts() && this.activeTab() === 'posts',
+  );
+  readonly isBookmarksEmpty = computed(
+    () => !this.isLoading() && !this.hasBookmarks() && this.activeTab() === 'bookmarks',
+  );
 
   ngOnInit(): void {
+    this.loadProfileData();
+  }
+
+  private loadProfileData(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
     this.authService
       .getProfileData()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((profileResponse: any) => {
-          setTimeout(() => {
-            this.currentUser = profileResponse.data.user;
-          }, 3000);
+          this.currentUser.set(profileResponse.data.user);
+
           const userId = profileResponse.data.user.id || profileResponse.data.user._id;
+
+          if (!userId) {
+            this.errorMessage.set('Unable to load profile data');
+            this.isLoading.set(false);
+            throw new Error('User ID not found');
+          }
 
           return forkJoin({
             postsData: this.authService.getUserPosts(userId),
             bookmarksData: this.authService.getBookmarks(),
           });
         }),
+        finalize(() => {
+          this.isLoading.set(false);
+        }),
       )
       .subscribe({
         next: (result: any) => {
-          this.posts = result.postsData.data.posts;
-          this.bookmarks = result.bookmarksData.data.bookmarks;
-
-          this.cdr.detectChanges();
+          this.posts.set(result.postsData.data?.posts || []);
+          this.bookmarks.set(result.bookmarksData.data?.bookmarks || []);
+          this.errorMessage.set('');
         },
         error: (error) => {
           console.error('Error fetching profile data:', error);
+          this.errorMessage.set('Failed to load profile data. Please try again.');
         },
       });
+  }
+
+  switchTab(tab: 'posts' | 'bookmarks'): void {
+    this.activeTab.set(tab);
+  }
+
+  retryLoad(): void {
+    this.loadProfileData();
   }
 }

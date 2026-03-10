@@ -1,4 +1,5 @@
-import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,12 +9,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AlertComponent } from '../../../../shared/components/alert/alert.component';
-import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../../environments/environment.development';
+import { AlertComponent } from '../../../../shared/components/alert/alert.component';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -134,9 +134,12 @@ export class RegisterComponent implements OnInit {
       .postRegister(registerData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {},
-        error: () => {
+        next: (response) => {
           this.isLoading.set(false);
+        },
+        error: (error) => {
+          this.isLoading.set(false);
+          console.error('Registration failed:', error);
         },
       });
   }

@@ -3,11 +3,13 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { AuthService } from '../services/auth/auth.service';
 import { ErrorHandlerService } from '../services/error-handler.service';
 
 export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
   const errorHandler = inject(ErrorHandlerService);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     tap((response: any) => {
@@ -21,11 +23,10 @@ export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
         const data = response?.body?.data;
 
         if (data) {
-          localStorage.setItem(environment.userToken, data.token);
+          authService.setUserData(data.token, JSON.parse(environment.userData));
 
           if (req.url.includes('signin')) {
-            const userData = data.user;
-            localStorage.setItem(environment.userData, JSON.stringify(userData));
+            authService.setUserData(data.token, data.user);
           }
 
           router.navigate(['/home']);

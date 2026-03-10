@@ -1,4 +1,4 @@
-import { Default, DefaultResponse } from './default.interface';
+import { DefaultResponse } from './default.interface';
 export interface Auth extends DefaultResponse {
   data: {
     isFollowing: boolean;
@@ -30,7 +30,8 @@ export interface UserData {
   following: [];
   createdAt: string;
   passwordChangedAt: string;
-  followersCount: 0;
-  followingCount: 0;
-  bookmarksCount: 0;
+  followersCount: number;
+  followingCount: number;
+  bookmarksCount: number;
+  mutualFollowersCount: number;
 }
