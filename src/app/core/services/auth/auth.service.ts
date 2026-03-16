@@ -50,7 +50,7 @@ export class AuthService {
     this._isAuthenticated.set(false);
   }
 
-  setUserData(token: string, userData: UserData): void {
+  setUserData(token: string, userData: any): void {
     localStorage.setItem(environment.userToken, token);
     localStorage.setItem(environment.userData, JSON.stringify(userData));
     this._currentUser.set(userData);

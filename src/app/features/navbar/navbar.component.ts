@@ -18,11 +18,11 @@ export class NavbarComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
   private readonly authService = inject(AuthService);
 
-  notificationCount = signal<number>(0);
-  isProfileDropdownOpen = signal(false);
-  isMobileMenuOpen = signal(false);
-
   readonly currentUser = this.authService.currentUser;
+
+  readonly notificationCount = signal<number>(0);
+  readonly isProfileDropdownOpen = signal(false);
+  readonly isMobileMenuOpen = signal(false);
 
   ngOnInit(): void {
     this.loadNotificationCount();

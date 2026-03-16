@@ -19,7 +19,7 @@ export interface PostData {
     username: string;
     photo: string;
   };
-  sharedPost: {};
+  sharedPost: PostData | null;
   likes: [];
   createdAt: string;
   commentsCount: number;

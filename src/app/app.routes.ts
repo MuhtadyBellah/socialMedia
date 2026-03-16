@@ -2,15 +2,10 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './core/auth/components/login/login.component';
 import { RegisterComponent } from './core/auth/components/register/register.component';
 import { authGuard } from './core/guards/auth-guard';
-import { ChangPasswordComponent } from './features/chang-password/chang-password.component';
 import { HomeComponent } from './features/home/home.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
-import { NotificationsComponent } from './features/notifications/notifications.component';
-import { ProfileComponent } from './features/profile/profile.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { SinglePostComponent } from './shared/components/single-post/single-post.component';
-import { SuggestedComponent } from './shared/components/suggested/suggested.component';
 
 export const routes: Routes = [
   {
@@ -54,7 +49,6 @@ export const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full',
       },
-
       {
         path: 'my-posts',
         redirectTo: 'home',
@@ -72,32 +66,46 @@ export const routes: Routes = [
       },
       {
         path: 'profile',
-        component: ProfileComponent,
+        loadComponent: () =>
+          import('./features/profile/profile.component').then((m) => m.ProfileComponent),
         title: 'Profile',
       },
       {
         path: 'profile/:id',
-        component: ProfileComponent,
+        loadComponent: () =>
+          import('./features/profile/profile.component').then((m) => m.ProfileComponent),
         title: 'Profile',
       },
       {
         path: 'posts/:id',
-        component: SinglePostComponent,
+        loadComponent: () =>
+          import('./shared/components/single-post/single-post.component').then(
+            (m) => m.SinglePostComponent,
+          ),
         title: 'Post Detail',
       },
       {
         path: 'changePassword',
-        component: ChangPasswordComponent,
+        loadComponent: () =>
+          import('./features/chang-password/chang-password.component').then(
+            (m) => m.ChangPasswordComponent,
+          ),
         title: 'Change Password',
       },
       {
         path: 'notifications',
-        component: NotificationsComponent,
+        loadComponent: () =>
+          import('./features/notifications/notifications.component').then(
+            (m) => m.NotificationsComponent,
+          ),
         title: 'Notifications',
       },
       {
         path: 'suggestions',
-        component: SuggestedComponent,
+        loadComponent: () =>
+          import('./shared/components/suggested/suggested.component').then(
+            (m) => m.SuggestedComponent,
+          ),
         title: 'Suggestions',
       },
     ],

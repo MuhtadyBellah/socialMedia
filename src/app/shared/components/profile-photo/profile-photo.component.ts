@@ -1,5 +1,4 @@
-import { Router } from '@angular/router';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-profile-photo',

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../../features/navbar/navbar.component';
 
@@ -7,5 +7,6 @@ import { NavbarComponent } from '../../features/navbar/navbar.component';
   imports: [RouterOutlet, NavbarComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent {}

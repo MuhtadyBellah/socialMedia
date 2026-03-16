@@ -25,11 +25,11 @@ export class HomeComponent implements OnInit {
 
   readonly posts = signal<PostData[]>([]);
   readonly activeTab = signal<TabType>('feed');
-  readonly isLoading = signal(false);
   readonly suggestions = signal<Partial<UserData>[]>([]);
 
   readonly currentUser = this.authService.currentUser;
 
+  readonly isLoading = signal(false);
   readonly hasError = signal(false);
   readonly errorMessage = signal('');
 

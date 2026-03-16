@@ -15,16 +15,18 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostData } from '../../../core/models/post.interface';
 import { PostsService } from '../../../core/services/posts/posts.service';
 import { CommentPostsComponent } from '../comment-posts/comment-posts.component';
+import { ProfilePhotoComponent } from '../profile-photo/profile-photo.component';
 
 @Component({
   selector: 'app-single-post',
-  imports: [CommonModule, CommentPostsComponent, RouterLink],
+  imports: [CommonModule, CommentPostsComponent, RouterLink, ProfilePhotoComponent],
   templateUrl: './single-post.component.html',
   styleUrl: './single-post.component.css',
 })
 export class SinglePostComponent implements OnInit, OnChanges {
   private readonly postsService = inject(PostsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly _localPost = signal<PostData | null>(null);
   private route = inject(ActivatedRoute);
 
   @Input() post!: PostData;
@@ -35,10 +37,10 @@ export class SinglePostComponent implements OnInit, OnChanges {
   readonly isDeleting = signal(false);
   readonly isMenuOpen = signal(false);
   readonly showComments = signal(false);
+  readonly isViewed = signal(false);
 
-  private readonly _localPost = signal<PostData | null>(null);
+  readonly isLocal = computed(() => this._localPost() === this.post);
   readonly localPost = computed(() => this._localPost() || this.post);
-
   readonly isBookmarked = computed(() => this.localPost().bookmarked || false);
   readonly likeCount = computed(() => this.localPost().likesCount || 0);
   readonly commentCount = computed(() => this.localPost().commentsCount || 0);

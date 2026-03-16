@@ -10,6 +10,8 @@ import { AuthService } from '../../core/services/auth/auth.service';
 import { ProfilePhotoComponent } from '../../shared/components/profile-photo/profile-photo.component';
 import { ProfilePostsComponent } from '../../shared/components/profile-posts/profile-posts.component';
 
+type ActiveTab = 'posts' | 'bookmarks';
+
 @Component({
   selector: 'app-profile',
   imports: [ProfilePhotoComponent, NgClass, ProfilePostsComponent],
@@ -20,12 +22,12 @@ export class ProfileComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
 
-  currentUser = signal<UserData | null>(null);
-  readonly isLoading = signal(true);
-  readonly errorMessage = signal('');
+  readonly activeTab = signal<ActiveTab>('posts');
+  readonly currentUser = signal<UserData | null>(null);
   readonly posts = signal<PostData[]>([]);
   readonly bookmarks = signal<BookmarkData[]>([]);
-  readonly activeTab = signal<'posts' | 'bookmarks'>('posts');
+  readonly errorMessage = signal('');
+  readonly isLoading = signal(true);
   readonly isViewed = signal(false);
 
   readonly hasPosts = computed(() => this.posts().length >= 0);
@@ -82,7 +84,7 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  switchTab(tab: 'posts' | 'bookmarks'): void {
+  switchTab(tab: ActiveTab): void {
     this.activeTab.set(tab);
   }
 

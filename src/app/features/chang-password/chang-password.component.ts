@@ -1,4 +1,4 @@
-import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -9,14 +9,13 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-chang-password',
-  imports: [ReactiveFormsModule, AlertComponent, NgIf, NgClass, CommonModule],
+  imports: [ReactiveFormsModule, AlertComponent, NgClass, CommonModule],
   templateUrl: './chang-password.component.html',
   styleUrl: './chang-password.component.css',
 })
@@ -24,13 +23,11 @@ export class ChangPasswordComponent implements OnInit {
   private readonly formBuild = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
 
   changePasswordForm!: FormGroup;
-  isSubmitted = false;
-  errorMessage = '';
 
-  // Use signals for password visibility
+  errorMessage = signal('');
+  isSubmitted = signal(false);
   showCurPassword = signal(false);
   showPassword = signal(false);
   showRePassword = signal(false);
@@ -83,13 +80,13 @@ export class ChangPasswordComponent implements OnInit {
 
     if (this.changePasswordForm.hasError('mismatch')) {
       const confirmCtrl = this.changePasswordForm.get('rePassword');
-      if (confirmCtrl?.touched || confirmCtrl?.dirty || this.isSubmitted) {
+      if (confirmCtrl?.touched || confirmCtrl?.dirty || this.isSubmitted()) {
         errors.push(this.validationMessages['rePassword']['mismatch']);
       }
     }
 
     Object.entries(this.changePasswordForm.controls).forEach(([key, control]) => {
-      if (control.invalid && (control.dirty || control.touched || this.isSubmitted)) {
+      if (control.invalid && (control.dirty || control.touched || this.isSubmitted())) {
         Object.keys(control.errors || {}).forEach((errorKey) => {
           const message = this.validationMessages[key]?.[errorKey];
           if (message && !errors.includes(message)) {
@@ -103,12 +100,12 @@ export class ChangPasswordComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.errorMessage = '';
-    this.isSubmitted = true;
+    this.errorMessage.set('');
+    this.isSubmitted.set(true);
 
     if (this.changePasswordForm.invalid) {
       this.changePasswordForm.markAllAsTouched();
-      this.isSubmitted = false;
+      this.isSubmitted.set(false);
       return;
     }
 
@@ -119,7 +116,7 @@ export class ChangPasswordComponent implements OnInit {
       .subscribe({
         next: (response) => {},
       });
-    this.isSubmitted = false;
+    this.isSubmitted.set(false);
   }
 
   toggleCurPasswordVisibility(): void {

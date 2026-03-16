@@ -2,11 +2,35 @@
 @import 'flowbite/src/themes/default';
 @import '@fortawesome/fontawesome-free/css/all.css';
 @plugin "flowbite/plugin";
-@theme {
+
+/* Optimized CSS Variables */
+:root {
+  /* Light Mode Colors */
   --color-main: #00298d;
   --color-secondary: #f0f2f5;
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
 }
 
+/* Dark Mode Theme */
+.dark {
+  --color-main: #ffd680;
+  --color-secondary: #1a1a1a;
+  --color-background: #000000;
+  --color-surface: #1a1a1a;
+  --color-text: #f3f4f6;
+  --color-text-secondary: #9ca3af;
+  --color-border: #374151;
+  --color-accent: #60a5fa;
+  --color-accent-hover: #3b82f6;
+}
+
+/* Global Styles */
 body {
   background-color: var(--color-secondary);
   color: var(--color-main);
@@ -14,6 +38,26 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion for better performance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @util container {
