@@ -7,7 +7,7 @@ export interface CommentResponse extends DefaultResponse {
 }
 
 export interface CommentData {
-  id: string;
+  _id: string;
   content: string;
   commentCreator: {
     _id: string;
@@ -25,6 +25,14 @@ export interface CommentData {
   likesCount: number;
   isReply: boolean;
   createdAt: string;
+}
+
+export interface LikedResponse extends DefaultResponse {
+  data: {
+    comment: CommentData;
+    liked: boolean;
+    likesCount: number;
+  };
 }
 
 export interface CommentReplyResponse extends DefaultResponse {
