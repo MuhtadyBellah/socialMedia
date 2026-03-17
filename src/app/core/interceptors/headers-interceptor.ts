@@ -8,6 +8,7 @@ export const headersInterceptor: HttpInterceptorFn = (req, next) => {
       req = req.clone({
         setHeaders: {
           authorization: `Bearer ${token}`,
+          // lang: 'en'
         },
       });
     }

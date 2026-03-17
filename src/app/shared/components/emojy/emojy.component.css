@@ -1,0 +1,24 @@
+/* Reusable Emoji Component Styles */
+.emoji-picker-wrapper {
+  display: block;
+  width: 100%;
+}
+
+.emoji-mart-picker {
+  width: 100% !important;
+  max-width: 320px;
+  min-height: 350px;
+}
+
+/* Override emoji-mart default styles for better integration */
+emoji-mart {
+  --background-rgb: 255, 255, 255;
+  --category-icon-active-color: #3b82f6;
+  --color-border-over: #e5e7eb;
+  --color-border: #e5e7eb;
+  --font-family: 'Inter', sans-serif;
+  --color-primary: #3b82f6;
+  --color-secondary: #6b7280;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

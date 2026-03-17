@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 import { AuthService } from '../services/auth/auth.service';
 import { ErrorHandlerService } from '../services/error-handler.service';
 
@@ -24,14 +25,21 @@ export const errorsInterceptor: HttpInterceptorFn = (req, next) => {
         if (data) {
           if (req.url.includes('signin')) {
             authService.setUserData(data.token, data.user);
+          } else {
+            authService.setUserData(
+              data.token,
+              JSON.parse(localStorage.getItem(environment.userData) || ''),
+            );
           }
 
-          router.parseUrl('/home');
+          router.navigate(['/home']);
+          return;
         }
       }
 
       if (req.url.includes('signup')) {
-        router.parseUrl('/auth/login');
+        router.navigate(['/auth/login']);
+        return;
       }
     }),
 

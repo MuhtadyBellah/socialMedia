@@ -1,0 +1,12 @@
+<div [ngClass]="size">
+  <emoji-mart
+    color="#3b82f6"
+    title="Pick your emoji…"
+    emoji="point_up"
+    (emojiSelect)="onEmojiSelect($event)"
+    [isNative]="true"
+    set="apple"
+    theme="light"
+    class="emoji-mart-picker"
+  ></emoji-mart>
+</div>

@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.loadNotificationCount();
 
-    interval(30000)
+    interval(300000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.loadNotificationCount());
   }

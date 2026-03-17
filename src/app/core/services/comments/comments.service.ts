@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CommentReplyResponse, CommentResponse } from '../../models/comment.interface';
+import {
+  CommentReplyResponse,
+  CommentResponse,
+  LikedResponse,
+} from '../../models/comment.interface';
 import { DefaultResponse } from '../../models/default.interface';
 import { ApiService } from '../api.service';
 import { Paged } from './../../models/default.interface';
@@ -50,8 +54,8 @@ export class CommentsService {
     return this.api.delete<DefaultResponse>(`posts/${postId}/comments/${commentId}`);
   }
 
-  putLikeComment(postId: string, commentId: string, data: object): Observable<DefaultResponse> {
-    return this.api.put<DefaultResponse>(`posts/${postId}/comments/${commentId}/like`, data);
+  putLikeComment(postId: string, commentId: string): Observable<LikedResponse> {
+    return this.api.put<LikedResponse>(`posts/${postId}/comments/${commentId}/like`);
   }
 
   putBookmarkPost(postId: string, data: object): Observable<DefaultResponse> {

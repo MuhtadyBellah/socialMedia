@@ -14,6 +14,7 @@
         placeholder="Write a {{ mode === 'reply' ? 'reply' : 'comment' }}..."
         rows="1"
         class="max-h-55 min-h-10 w-full resize-none bg-transparent px-2 py-1.5 text-sm leading-5 outline-none placeholder:text-slate-500"
+        [(ngModel)]="postText"
       ></textarea>
 
       @if (imagePreview()) {
@@ -47,9 +48,11 @@
       }
 
       <div class="mt-1 flex items-center justify-between">
+        <!-- Left actions -->
         <div class="flex items-center gap-1">
+          <!-- Upload -->
           <label
-            class="inline-flex cursor-pointer items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-emerald-600"
+            class="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-200 hover:text-emerald-600"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,11 +69,22 @@
               <circle cx="9" cy="9" r="2"></circle>
               <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
             </svg>
-            <input accept="image/*" class="hidden" type="file" (change)="onImageSelected($event)" />
+
+            <input
+              formControlName="image"
+              [(ngModel)]="selectedImage"
+              accept="image/*"
+              class="hidden"
+              type="file"
+              (change)="onImageSelected($event)"
+            />
           </label>
+
+          <!-- Emoji button -->
           <button
             type="button"
-            class="inline-flex items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-amber-500"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-200 hover:text-amber-500"
+            (click)="togglePicker()"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -90,6 +104,8 @@
             </svg>
           </button>
         </div>
+
+        <!-- Submit -->
         <button
           type="submit"
           class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#1877f2] text-white shadow-sm transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:bg-[#9ec5ff] disabled:opacity-100"
@@ -130,6 +146,19 @@
           }
         </button>
       </div>
+
+      <!-- Emoji Picker -->
+      @if (showPicker()) {
+        <div class="relative">
+          <div
+            class="absolute left-0 top-2 z-50 ml-11 w-65 max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
+          >
+            <div class="p-2">
+              <app-emojy size="sm" (emojiSelected)="onEmojiSelected($event)"></app-emojy>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </div>
 

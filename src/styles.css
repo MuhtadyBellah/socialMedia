@@ -2,6 +2,132 @@
 @import 'flowbite/src/themes/default';
 @import '@fortawesome/fontawesome-free/css/all.css';
 @plugin "flowbite/plugin";
+@import '@ctrl/ngx-emoji-mart/picker';
+
+/* =========================
+   Base Theme (Light forced)
+========================= */
+emoji-mart {
+  /* force light */
+  color-scheme: light;
+
+  /* colors */
+  --background-rgb: 255, 255, 255;
+  --color-text: #111827;
+  --color-border: #e5e7eb;
+  --color-border-over: #d1d5db;
+  --color-primary: #3b82f6;
+  --color-secondary: #6b7280;
+
+  /* UI */
+  font-family: 'Inter', sans-serif;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* size */
+  width: 320px;
+  max-width: 100%;
+}
+
+emoji-mart {
+  background-color: #ffffff !important;
+}
+
+emoji-mart .emoji-mart {
+  background-color: #ffffff !important;
+}
+
+/* background */
+emoji-mart {
+  background-color: #fff;
+}
+
+/* text */
+emoji-mart,
+emoji-mart input {
+  color: #111827;
+}
+
+/* =========================
+   Dark mode isolation
+========================= */
+.dark emoji-mart {
+  color-scheme: light;
+
+  --background-rgb: 255, 255, 255;
+  --color-text: #111827;
+}
+
+/* =========================
+   Icons تحسين
+========================= */
+emoji-mart .category-icons svg {
+  fill: #6b7280;
+  transition: 0.2s;
+}
+
+emoji-mart .category-icons button:hover svg {
+  fill: #111827;
+}
+
+/* =========================
+   Search input
+========================= */
+emoji-mart input {
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+}
+
+/* =========================
+   Scroll area
+========================= */
+emoji-mart .emoji-mart-scroll {
+  max-height: 260px;
+}
+
+/* =========================
+   Sizes (Reusable)
+========================= */
+
+/* small (reply) */
+.sm emoji-mart {
+  width: 240px;
+}
+
+.sm emoji-mart .emoji-mart-scroll {
+  max-height: 180px;
+}
+
+.sm emoji-mart .emoji-mart-emoji {
+  transform: scale(0.9);
+}
+
+/* medium */
+.md emoji-mart {
+  width: 300px;
+}
+
+/* large */
+.lg emoji-mart {
+  width: 360px;
+}
+
+/* =========================
+   Optional: smoother UI
+========================= */
+emoji-mart {
+  transition: box-shadow 0.2s ease;
+}
+
+emoji-mart:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
 
 /* Optimized CSS Variables */
 :root {

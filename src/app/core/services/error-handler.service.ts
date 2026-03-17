@@ -1,5 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
 
@@ -59,7 +59,7 @@ export class ErrorHandlerService {
         break;
 
       case 400:
-        message = 'Incorrect Email or Password';
+        message = 'Incorrect Bad Request';
         details = this.stringifyError(error.error);
         break;
 
