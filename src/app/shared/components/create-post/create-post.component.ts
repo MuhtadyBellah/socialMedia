@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { PostsService } from '../../../core/services/posts/posts.service';
 import { EmojyComponent } from '../emojy/emojy.component';
@@ -100,7 +101,10 @@ export class CreatePostComponent {
 
     this.postsService
       .postCreate(formData)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: () => {
           this.postText.set('');

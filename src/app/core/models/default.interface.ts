@@ -7,7 +7,6 @@ export interface DefaultResponse {
 }
 
 export interface Paged<T> extends DefaultResponse {
-  data: T;
   meta: {
     feedMode: string;
     pagination: Pagination;
@@ -19,6 +18,6 @@ interface Pagination {
   limit: number;
   total: number;
   numberOfPages: number;
-  nextPage: number;
-  prevPage: number;
+  nextPage: number | null;
+  prevPage: number | null;
 }

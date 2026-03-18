@@ -1,5 +1,6 @@
 import { Component, computed, DestroyRef, inject, Input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { CommentData } from '../../../core/models/comment.interface';
 import { CommentsService } from '../../../core/services/comments/comments.service';
 import { ReplyComponent } from '../reply/reply.component';
@@ -38,7 +39,10 @@ export class CommentPostsComponent {
 
     this.commentsService
       .getPostComments(this.postId, { page, limit: 10 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: (response) => {
           if (response.data?.comments) {
@@ -55,9 +59,6 @@ export class CommentPostsComponent {
           this.errorMessage.set('Failed to load comments. Please try again.');
           console.error('Comments load error:', error);
         },
-      })
-      .add(() => {
-        this.isLoading.set(false);
       });
   }
 
@@ -70,9 +71,14 @@ export class CommentPostsComponent {
   }
 
   likeComment(commentId: string): void {
+    this.isLoading.set(true);
+
     this.commentsService
       .putLikeComment(this.postId, commentId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: (response) => {
           if (response.data?.comment) {
@@ -108,9 +114,14 @@ export class CommentPostsComponent {
   loadReplies(commentId: string): void {
     if (this.replies().has(commentId)) return;
 
+    this.isLoading.set(true);
+
     this.commentsService
       .getCommentReplies(this.postId, commentId, { page: 1, limit: 5 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: (response) => {
           if (response.data?.replies) {

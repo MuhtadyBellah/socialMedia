@@ -18,6 +18,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { CommentData } from '../../../core/models/comment.interface';
 import { CommentsService } from '../../../core/services/comments/comments.service';
 import { EmojyComponent } from '../emojy/emojy.component';
@@ -123,26 +124,29 @@ export class ReplyComponent {
         ? this.commentsService.postReply(this.postId, this.commentId, formData)
         : this.commentsService.postComment(this.postId, formData);
 
-    serviceCall.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response: any) => {
-        if (response.data?.comment || response.data?.reply) {
-          const newComment = response.data.comment || response.data.reply;
-          if (this.mode === 'reply') {
-            this.replyPosted.emit(newComment);
-          } else {
-            this.commentPosted.emit(newComment);
+    serviceCall
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isSubmitting.set(false)),
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.data?.comment || response.data?.reply) {
+            const newComment = response.data.comment || response.data.reply;
+            if (this.mode === 'reply') {
+              this.replyPosted.emit(newComment);
+            } else {
+              this.commentPosted.emit(newComment);
+            }
           }
-        }
-        this.commentForm.reset();
-        this.postText.set('');
-        this.removeImage();
-        this.isSubmitting.set(false);
-        this.errorMessage.set('');
-      },
-      error: (error) => {
-        this.errorMessage.set(`Failed to post ${this.mode}. Please try again.`);
-        this.isSubmitting.set(false);
-      },
-    });
+          this.commentForm.reset();
+          this.postText.set('');
+          this.removeImage();
+          this.errorMessage.set('');
+        },
+        error: (error) => {
+          this.errorMessage.set(`Failed to post ${this.mode}. Please try again.`);
+        },
+      });
   }
 }

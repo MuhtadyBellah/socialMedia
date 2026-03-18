@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { Auth, AuthResponse, UserData } from '../../models/auth.interface';
 import { BookmarkResponse } from '../../models/bookmark.interface';
-import { DefaultResponse } from '../../models/default.interface';
+import { DefaultResponse, Paged } from '../../models/default.interface';
 import { PostResponse } from '../../models/post.interface';
 import { SuggestionResponse } from '../../models/suggestion.interface';
 import { ApiService } from '../api.service';
@@ -87,8 +87,12 @@ export class AuthService {
     return this.api.get<BookmarkResponse>('users/bookmarks', params);
   }
 
-  getFollowSuggestions(params?: any): Observable<SuggestionResponse> {
-    return this.api.get<SuggestionResponse>('users/suggestions', { page: 1, limit: 10, ...params });
+  getFollowSuggestions(page = 1, limit = 5, ...params: any): Observable<Paged<SuggestionResponse>> {
+    return this.api.get<Paged<SuggestionResponse>>('users/suggestions', {
+      page: page,
+      limit: limit,
+      ...params,
+    });
   }
 
   getUserProfile(userId: string, params?: any): Observable<Auth> {

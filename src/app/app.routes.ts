@@ -6,6 +6,8 @@ import { HomeComponent } from './features/home/home.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { SinglePostComponent } from './shared/components/single-post/single-post.component';
+import { SuggestedComponent } from './shared/components/suggested/suggested.component';
 
 export const routes: Routes = [
   {
@@ -78,10 +80,7 @@ export const routes: Routes = [
       },
       {
         path: 'posts/:id',
-        loadComponent: () =>
-          import('./shared/components/single-post/single-post.component').then(
-            (m) => m.SinglePostComponent,
-          ),
+        component: SinglePostComponent,
         title: 'Post Detail',
       },
       {
@@ -102,10 +101,7 @@ export const routes: Routes = [
       },
       {
         path: 'suggestions',
-        loadComponent: () =>
-          import('./shared/components/suggested/suggested.component').then(
-            (m) => m.SuggestedComponent,
-          ),
+        component: SuggestedComponent,
         title: 'Suggestions',
       },
     ],

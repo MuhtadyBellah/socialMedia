@@ -3,7 +3,6 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-import { UserData } from '../../core/models/auth.interface';
 import { PostData } from '../../core/models/post.interface';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { PostsService } from '../../core/services/posts/posts.service';
@@ -25,7 +24,6 @@ export class HomeComponent implements OnInit {
 
   readonly posts = signal<PostData[]>([]);
   readonly activeTab = signal<TabType>('feed');
-  readonly suggestions = signal<Partial<UserData>[]>([]);
 
   readonly currentUser = this.authService.currentUser;
 
@@ -36,22 +34,7 @@ export class HomeComponent implements OnInit {
   readonly isEmpty = computed(() => !this.isLoading() && this.posts().length === 0);
 
   ngOnInit(): void {
-    this.loadSuggestions();
     this.loadFeed();
-  }
-
-  private loadSuggestions(): void {
-    this.authService
-      .getFollowSuggestions({ limit: 5 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.suggestions.set(response.data?.suggestions || []);
-        },
-        error: () => {
-          this.suggestions.set([]);
-        },
-      });
   }
 
   loadFeed(): void {

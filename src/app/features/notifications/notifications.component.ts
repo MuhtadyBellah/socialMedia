@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { NotificationData } from '../../core/models/notification.interface';
 import { NotificationsService } from '../../core/services/notifications/notifications.service';
 
@@ -37,7 +38,10 @@ export class NotificationsComponent implements OnInit {
 
     this.notificationsService
       .getNotifications({ page, limit: 20 })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: (response: any) => {
           const newNotifications = response.data?.notifications || [];
@@ -55,9 +59,6 @@ export class NotificationsComponent implements OnInit {
           this.errorMessage.set('Failed to load notifications. Please try again.');
           this.showLoadMore.set(false);
         },
-      })
-      .add(() => {
-        this.isLoading.set(false);
       });
   }
 
@@ -76,9 +77,14 @@ export class NotificationsComponent implements OnInit {
       ),
     );
 
+    this.isLoading.set(true);
+
     this.notificationsService
       .patchMarkNotification(notificationId, { isRead: true })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         error: () => {
           this.notifications.update((notifications) =>
@@ -99,9 +105,14 @@ export class NotificationsComponent implements OnInit {
       notifications.map((notification) => ({ ...notification, isRead: true })),
     );
 
+    this.isLoading.set(true);
+
     this.notificationsService
       .patchMarkAll({ isRead: true })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         error: () => {
           this.loadNotifications();
