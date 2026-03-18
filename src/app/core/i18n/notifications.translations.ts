@@ -13,6 +13,8 @@ export const NOTIFICATIONS_TRANSLATIONS = {
   NO_NOTIFICATIONS_TITLE: 'notifications.noNotificationsTitle',
   NO_NOTIFICATIONS_SUBTITLE: 'notifications.noNotificationsSubtitle',
   TRY_AGAIN: 'notifications.tryAgain',
+  READ: 'notifications.read',
+  UNREAD: 'notifications.unread',
 } as const;
 
 export type NOTIFICATIONS_TRANSLATIONS_Keys = typeof NOTIFICATIONS_TRANSLATIONS[keyof typeof NOTIFICATIONS_TRANSLATIONS];

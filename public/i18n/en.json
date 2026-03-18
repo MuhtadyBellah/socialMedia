@@ -132,7 +132,9 @@
     "loadingMore": "Loading more...",
     "noNotificationsTitle": "No notifications yet.",
     "noNotificationsSubtitle": "When someone interacts with your posts, you'll see them here.",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "read": "Read",
+    "unread": "Unread"
   },
   "profile": {
     "loading": "Loading profile data...",

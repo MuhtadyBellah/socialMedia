@@ -88,14 +88,14 @@ export class AuthService {
   }
 
   getFollowSuggestions(params?: any): Observable<SuggestionResponse> {
-    return this.api.get<SuggestionResponse>('users/suggestions', { limit: 10, ...params });
+    return this.api.get<SuggestionResponse>('users/suggestions', { page: 1, limit: 10, ...params });
   }
 
   getUserProfile(userId: string, params?: any): Observable<Auth> {
     return this.api.get<Auth>(`users/${userId}/profile`, params);
   }
 
-  putFollow(userId: string, data: object): Observable<DefaultResponse> {
+  putFollow(userId: string, data?: object): Observable<DefaultResponse> {
     return this.api.put<DefaultResponse>(`users/${userId}/follow`, data);
   }
 

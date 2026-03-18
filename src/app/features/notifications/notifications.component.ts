@@ -1,28 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { NotificationData } from '../../core/models/notification.interface';
 import { NotificationsService } from '../../core/services/notifications/notifications.service';
-
-export interface Notification {
-  _id: string;
-  type: 'like' | 'comment' | 'follow' | 'share' | 'mention';
-  user: {
-    _id: string;
-    name: string;
-    profilePhoto?: string;
-  };
-  post?: {
-    _id: string;
-    body: string;
-  };
-  content: string;
-  isRead: boolean;
-  createdAt: string;
-}
 
 @Component({
   selector: 'app-notifications',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.css'],
 })
@@ -30,16 +15,14 @@ export class NotificationsComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly notifications = signal<Notification[]>([]);
+  readonly notifications = signal<NotificationData[]>([]);
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
   readonly currentPage = signal(1);
   readonly showLoadMore = signal(false);
 
   readonly isEmpty = computed(() => !this.isLoading() && this.notifications().length === 0);
-  readonly unreadCount = computed(
-    () => this.notifications().filter((n: Notification) => !n.isRead).length,
-  );
+  readonly unreadCount = computed(() => this.notifications().filter((n) => !n.isRead).length);
 
   ngOnInit(): void {
     this.loadNotifications();
@@ -140,6 +123,38 @@ export class NotificationsComponent implements OnInit {
         return '@';
       default:
         return '🔔';
+    }
+  }
+
+  getNotificationMessage(notification: NotificationData): string {
+    switch (notification.type) {
+      case 'like':
+        return 'Someone liked your post';
+      case 'comment':
+        return 'Someone commented on your post';
+      case 'follow':
+        return 'Someone followed you';
+      case 'share':
+        return 'Someone shared your post';
+      case 'mention':
+        return 'Someone mentioned you in a post';
+      default:
+        return 'You have a new notification';
+    }
+  }
+
+  getNotificationUrl(notification: NotificationData): string[] | null {
+    if (!notification.entity) return null;
+
+    switch (notification.entityType) {
+      case 'post':
+        return ['/post', notification.entity._id];
+      case 'comment':
+        return ['/post', notification.entity.user];
+      case 'user':
+        return ['/profile', notification.entity._id];
+      default:
+        return ['/post', notification.entity._id];
     }
   }
 

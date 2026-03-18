@@ -132,7 +132,9 @@
     "loadingMore": "جاري التحميل...",
     "noNotificationsTitle": "لا توجد إشعارات بعد.",
     "noNotificationsSubtitle": "عندما يتفاعل شخص ما مع منشوراتك، ستراه هنا.",
-    "tryAgain": "حاول مجدداً"
+    "tryAgain": "حاول مجدداً",
+    "read": "مقروء",
+    "unread": "غير مقروء"
   },
   "profile": {
     "loading": "جاري تحميل بيانات الملف الشخصي...",

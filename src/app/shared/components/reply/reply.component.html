@@ -151,11 +151,9 @@
       @if (showPicker()) {
         <div class="relative">
           <div
-            class="absolute left-0 top-2 z-50 ml-11 w-65 max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
+            class="absolute left-0 top-2 z-50 -ml-14 w-120 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
           >
-            <div class="p-2">
-              <app-emojy size="sm" (emojiSelected)="onEmojiSelected($event)"></app-emojy>
-            </div>
+            <app-emojy size="sm" (emojiSelected)="onEmojiSelected($event)"></app-emojy>
           </div>
         </div>
       }

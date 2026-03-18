@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../api.service';
 import { DefaultResponse, Paged } from '../../models/default.interface';
 import { PostResponse } from '../../models/post.interface';
+import { ApiService } from '../api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,7 @@ export class PostsService {
   getFeed(params?: any): Observable<Paged<PostResponse>> {
     return this.api.get<Paged<PostResponse>>('posts/feed', {
       only: 'following',
+      page: 1,
       limit: 10,
       ...params,
     });
