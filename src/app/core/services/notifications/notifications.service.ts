@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from '../api.service';
 import { DefaultResponse, Paged } from '../../models/default.interface';
 import { NotificationResponse } from '../../models/notification.interface';
+import { ApiService } from '../api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +10,9 @@ import { NotificationResponse } from '../../models/notification.interface';
 export class NotificationsService {
   private readonly api = inject(ApiService);
 
-  getNotifications(params?: any): Observable<Paged<NotificationResponse>> {
+  getNotifications(unread: boolean, params: any): Observable<Paged<NotificationResponse>> {
     return this.api.get<Paged<NotificationResponse>>('notifications', {
-      unread: false,
+      unread: unread,
       page: 1,
       limit: 10,
       ...params,
@@ -23,7 +23,7 @@ export class NotificationsService {
     return this.api.get<DefaultResponse>('notifications/unread-count', params);
   }
 
-  patchMarkNotification(notificationId: string, data: object): Observable<DefaultResponse> {
+  patchMarkNotification(notificationId: string, data?: object): Observable<DefaultResponse> {
     return this.api.patch<DefaultResponse>(`notifications/${notificationId}/read`, data);
   }
 
