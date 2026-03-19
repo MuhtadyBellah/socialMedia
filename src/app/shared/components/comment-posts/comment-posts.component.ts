@@ -38,7 +38,7 @@ export class CommentPostsComponent {
     this.errorMessage.set('');
 
     this.commentsService
-      .getPostComments(this.postId, { page, limit: 10 })
+      .getPostComments(this.postId, { page: page, limit: 10 })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),

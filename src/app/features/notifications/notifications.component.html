@@ -36,12 +36,192 @@
         Mark all as read
       </button>
     </div>
+    <div class="mt-4 grid grid-cols-2 gap-2 sm:flex sm:items-center">
+      <button
+        type="button"
+        class="rounded-full px-4 py-1.5 text-sm font-bold transition"
+        [ngClass]="
+          unRead()
+            ? 'bg-[#1877f2] text-white'
+            : 'inline-flex items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200'
+        "
+        (click)="toggleActive()"
+      >
+        All</button
+      ><button
+        type="button"
+        class="rounded-full px-4 py-1.5 text-sm font-bold transition"
+        [ngClass]="
+          !unRead()
+            ? 'bg-[#1877f2] text-white'
+            : 'inline-flex items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200'
+        "
+        (click)="unRead.set(false); loadNotifications()"
+      >
+        Unread
+      </button>
+    </div>
   </div>
 
-  @if (isLoading() && notifications().length === 0) {
+  @if (isLoading()) {
     <div class="p-8 text-center">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       <p class="mt-2 text-sm text-slate-500">Loading notifications...</p>
+    </div>
+  } @else if (!isLoading() || notifications().length > 0) {
+    <div class="space-y-2 p-3 sm:p-4">
+      @for (notification of notifications(); track notification._id) {
+        <article
+          class="group relative flex gap-3 rounded-xl border p-3 transition sm:rounded-2xl sm:p-4 border-slate-200 bg-white hover:bg-slate-50"
+          [class.bg-blue-50]="!notification.isRead"
+        >
+          <div
+            class="flex shrink-0 w-10 h-10 rounded-full bg-slate-100 items-center justify-center text-lg"
+          >
+            {{ getNotificationIcon(notification.type) }}
+          </div>
+          <div class="relative shrink-0">
+            <button
+              type="button"
+              class="block cursor-pointer"
+              [routerLink]="['/profile', notification.actor._id]"
+            >
+              <img
+                [alt]="notification.actor.name"
+                class="h-11 w-11 rounded-full object-cover"
+                [src]="notification.actor.photo"
+              />
+            </button>
+            @if (notification.type === 'like_post') {
+              <span
+                class="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white ring-2 ring-white text-rose-500"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-heart"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  ></path></svg
+              ></span>
+            } @else if (notification.type === 'share_post') {
+              <span
+                class="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white ring-2 ring-white text-emerald-600"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-repeat2 lucide-repeat-2"
+                  aria-hidden="true"
+                >
+                  <path d="m2 9 3-3 3 3"></path>
+                  <path d="M13 18H7a2 2 0 0 1-2-2V6"></path>
+                  <path d="m22 15-3 3-3-3"></path>
+                  <path d="M11 6h6a2 2 0 0 1 2 2v10"></path></svg
+              ></span>
+            } @else if (notification.type === 'comment_post') {
+              <span
+                class="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white ring-2 ring-white text-[#1877f2]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-message-circle"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
+                  ></path></svg
+              ></span>
+            }
+            @if (!notification.isRead) {
+              <span
+                class="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white ring-2 ring-white text-blue-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              </span>
+            }
+          </div>
+          <div class="min-w-0 flex-1" (click)="markAsRead(notification._id)">
+            <div class="flex flex-wrap items-start justify-between gap-1.5 sm:gap-2">
+              <p class="text-sm leading-6 text-slate-800">
+                <button
+                  type="button"
+                  class="font-extrabold hover:text-[#1877f2] hover:underline"
+                  [routerLink]="['/profile', notification.actor._id]"
+                >
+                  {{ notification.actor.name }}
+                </button>
+                {{
+                  notification.type === 'like'
+                    ? 'liked your post'
+                    : notification.type === 'comment'
+                      ? 'commented on your post'
+                      : 'shared your post'
+                }}
+              </p>
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <span class="text-xs font-semibold text-slate-500">{{
+                  getTimeAgo(notification.createdAt)
+                }}</span>
+              </div>
+            </div>
+            <p class="mt-0.5 text-sm text-slate-600">
+              {{ notification.entity.body }}
+            </p>
+            <div class="mt-2 flex items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600"
+                [class.text-emerald-600]="notification.isRead"
+                [class.text-blue-600]="!notification.isRead"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-check"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5"></path></svg
+                >{{ notification.isRead ? 'Read' : 'Unread' }}</span
+              >
+            </div>
+          </div>
+        </article>
+      }
     </div>
   }
 
@@ -72,174 +252,24 @@
     </div>
   }
 
-  @if (!isLoading() || notifications().length >= 0) {
-    <div class="space-y-2 p-3 sm:p-4">
-      @for (notification of notifications(); track notification._id) {
-        <article
-          class="p-4 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-100"
-          [class.bg-blue-50]="!notification.isRead"
+  @if (showLoadMore()) {
+    @if (isLoading() && notifications().length > 0) {
+      <div class="p-4 text-center">
+        <div
+          class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"
+        ></div>
+        <p class="mt-2 text-xs text-slate-500">Loading more...</p>
+      </div>
+    } @else if (!isLoading()) {
+      <div class="p-4 border-t border-slate-200">
+        <button
+          type="button"
+          class="w-full py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors text-sm font-medium"
+          (click)="loadMoreNotifications()"
         >
-          <div
-            class="flex shrink-0 w-10 h-10 rounded-full bg-slate-100 items-center justify-center text-lg"
-          >
-            {{ getNotificationIcon(notification.type) }}
-          </div>
-          <div class="relative shrink-0">
-            <button
-              type="button"
-              class="block cursor-pointer"
-              [routerLink]="['/profile', notification.actor._id]"
-            >
-              <img
-                [alt]="notification.actor.name"
-                class="h-11 w-11 rounded-full object-cover"
-                [src]="notification.actor.photo"
-              />
-            </button>
-            @if (!notification.isRead) {
-              <span
-                class="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white ring-2 ring-white text-blue-600"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                </svg>
-              </span>
-            }
-          </div>
-          <div class="min-w-0 flex-1">
-            @if (getNotificationUrl(notification)) {
-              <a
-                class="block"
-                [routerLink]="getNotificationUrl(notification)"
-                (click)="markAsRead(notification._id)"
-              >
-                <div class="flex flex-wrap items-start justify-between gap-1.5 sm:gap-2">
-                  <p class="text-sm leading-6 text-slate-800">
-                    <button
-                      type="button"
-                      class="font-extrabold hover:text-[#1877f2] hover:underline"
-                      [routerLink]="['/profile', notification.actor._id]"
-                      (click)="$event.stopPropagation()"
-                    >
-                      {{ notification.actor.name }}
-                    </button>
-                    {{ getNotificationMessage(notification) }}
-                  </p>
-                  <div class="flex items-center gap-1.5 sm:gap-2">
-                    <span class="text-xs font-semibold text-slate-500">
-                      {{ getTimeAgo(notification.createdAt) }}
-                    </span>
-                  </div>
-                </div>
-                @if (notification.entity.body) {
-                  <p class="mt-0.5 text-sm text-slate-600 line-clamp-2">
-                    "{{ notification.entity.body }}"
-                  </p>
-                }
-                <div class="mt-2 flex items-center justify-between gap-2">
-                  <span
-                    class="inline-flex items-center gap-1.5 text-xs font-semibold"
-                    [class.text-emerald-600]="notification.isRead"
-                    [class.text-blue-600]="!notification.isRead"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-check"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5"></path>
-                    </svg>
-                    {{ notification.isRead ? 'Read' : 'Unread' }}
-                  </span>
-                </div>
-              </a>
-            } @else {
-              <div class="block cursor-pointer" (click)="markAsRead(notification._id)">
-                <div class="flex flex-wrap items-start justify-between gap-1.5 sm:gap-2">
-                  <p class="text-sm leading-6 text-slate-800">
-                    <button
-                      type="button"
-                      class="font-extrabold hover:text-[#1877f2] hover:underline"
-                      [routerLink]="['/profile', notification.actor._id]"
-                      (click)="$event.stopPropagation()"
-                    >
-                      {{ notification.actor.name }}
-                    </button>
-                    {{ getNotificationMessage(notification) }}
-                  </p>
-                  <div class="flex items-center gap-1.5 sm:gap-2">
-                    <span class="text-xs font-semibold text-slate-500">
-                      {{ getTimeAgo(notification.createdAt) }}
-                    </span>
-                  </div>
-                </div>
-                @if (notification.entity.body) {
-                  <p class="mt-0.5 text-sm text-slate-600 line-clamp-2">
-                    "{{ notification.entity.body }}"
-                  </p>
-                }
-                <div class="mt-2 flex items-center justify-between gap-2">
-                  <span
-                    class="inline-flex items-center gap-1.5 text-xs font-semibold"
-                    [class.text-emerald-600]="notification.isRead"
-                    [class.text-blue-600]="!notification.isRead"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-check"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5"></path>
-                    </svg>
-                    {{ notification.isRead ? 'Read' : 'Unread' }}
-                  </span>
-                </div>
-              </div>
-            }
-          </div>
-        </article>
-      }
-    </div>
-  }
-
-  @if (showLoadMore() && !isLoading()) {
-    <div class="p-4 border-t border-slate-200">
-      <button
-        type="button"
-        class="w-full py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors text-sm font-medium"
-        (click)="loadMoreNotifications()"
-      >
-        Load more notifications
-      </button>
-    </div>
-  }
-
-  @if (isLoading() && notifications().length > 0) {
-    <div class="p-4 text-center">
-      <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-      <p class="mt-2 text-xs text-slate-500">Loading more...</p>
-    </div>
+          Load more notifications
+        </button>
+      </div>
+    }
   }
 </section>

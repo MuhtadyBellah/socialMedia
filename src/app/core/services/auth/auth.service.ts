@@ -87,7 +87,7 @@ export class AuthService {
     return this.api.get<BookmarkResponse>('users/bookmarks', params);
   }
 
-  getFollowSuggestions(page = 1, limit = 5, ...params: any): Observable<Paged<SuggestionResponse>> {
+  getFollowSuggestions(page = 1, limit = 5, params?: any): Observable<Paged<SuggestionResponse>> {
     return this.api.get<Paged<SuggestionResponse>>('users/suggestions', {
       page: page,
       limit: limit,

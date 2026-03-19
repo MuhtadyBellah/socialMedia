@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { Router, RouterLink } from '@angular/router';
+import { finalize, interval } from 'rxjs';
 import { NotificationData } from '../../core/models/notification.interface';
 import { NotificationsService } from '../../core/services/notifications/notifications.service';
 
@@ -15,18 +15,24 @@ import { NotificationsService } from '../../core/services/notifications/notifica
 export class NotificationsComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   readonly notifications = signal<NotificationData[]>([]);
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
   readonly currentPage = signal(1);
   readonly showLoadMore = signal(false);
+  readonly unRead = signal(true);
 
   readonly isEmpty = computed(() => !this.isLoading() && this.notifications().length === 0);
   readonly unreadCount = computed(() => this.notifications().filter((n) => !n.isRead).length);
 
   ngOnInit(): void {
     this.loadNotifications();
+
+    interval(300000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadNotifications());
   }
 
   loadNotifications(page: number = 1): void {
@@ -37,7 +43,7 @@ export class NotificationsComponent implements OnInit {
     this.currentPage.set(page);
 
     this.notificationsService
-      .getNotifications({ page, limit: 20 })
+      .getNotifications(this.unRead(), { page: page, limit: 20 })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
@@ -62,6 +68,11 @@ export class NotificationsComponent implements OnInit {
       });
   }
 
+  toggleActive(): void {
+    this.unRead.set(!this.unRead());
+    this.loadNotifications();
+  }
+
   loadMoreNotifications(): void {
     this.loadNotifications(this.currentPage() + 1);
   }
@@ -71,16 +82,10 @@ export class NotificationsComponent implements OnInit {
   }
 
   markAsRead(notificationId: string): void {
-    this.notifications.update((notifications) =>
-      notifications.map((notification) =>
-        notification._id === notificationId ? { ...notification, isRead: true } : notification,
-      ),
-    );
-
     this.isLoading.set(true);
 
     this.notificationsService
-      .patchMarkNotification(notificationId, { isRead: true })
+      .patchMarkNotification(notificationId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
@@ -96,6 +101,8 @@ export class NotificationsComponent implements OnInit {
           );
         },
       });
+
+    this.router.navigate([['/posts/', notificationId]]);
   }
 
   markAllAsRead(): void {
@@ -151,21 +158,6 @@ export class NotificationsComponent implements OnInit {
         return 'Someone mentioned you in a post';
       default:
         return 'You have a new notification';
-    }
-  }
-
-  getNotificationUrl(notification: NotificationData): string[] | null {
-    if (!notification.entity) return null;
-
-    switch (notification.entityType) {
-      case 'post':
-        return ['/post', notification.entity._id];
-      case 'comment':
-        return ['/post', notification.entity.user];
-      case 'user':
-        return ['/profile', notification.entity._id];
-      default:
-        return ['/post', notification.entity._id];
     }
   }
 
