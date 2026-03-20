@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -20,6 +21,7 @@ import { EmojyComponent } from '../emojy/emojy.component';
   imports: [CommonModule, FormsModule, EmojyComponent],
   templateUrl: './create-post.component.html',
   styleUrl: './create-post.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreatePostComponent {
   private readonly postsService = inject(PostsService);
@@ -43,6 +45,9 @@ export class CreatePostComponent {
     return !(text || post !== null) || this.isLoading();
   });
 
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
+  private readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
   togglePicker(): void {
     this.showPicker.update((v) => !v);
   }
@@ -61,22 +66,37 @@ export class CreatePostComponent {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
+    if (!input.files || input.files.length === 0) return;
 
-      if (!file.type.startsWith('image/')) {
-        console.warn('Selected file is not an image');
-        return;
-      }
+    const file = input.files[0];
 
-      this.postImage.set(file);
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagePreviewUrl.set(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!this.ALLOWED_TYPES.includes(file.type)) {
+      this.errorMessage.set('Invalid file type. Please select a JPEG, PNG, GIF, or WebP image.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      input.value = '';
+      return;
     }
+
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.errorMessage.set('File too large. Please select an image smaller than 5MB.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      input.value = '';
+      return;
+    }
+
+    this.postImage.set(file);
+    this.errorMessage.set('');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imagePreviewUrl.set(e.target?.result as string);
+    };
+    reader.onerror = () => {
+      this.errorMessage.set('Failed to load image preview.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      this.removeImage();
+    };
+    reader.readAsDataURL(file);
   }
 
   removeImage(): void {
@@ -85,6 +105,8 @@ export class CreatePostComponent {
   }
 
   onSubmit(): void {
+    if (this.isSubmitDisabled()) return;
+
     this.errorMessage.set('');
     this.isLoading.set(true);
 
@@ -109,12 +131,17 @@ export class CreatePostComponent {
         next: () => {
           this.postText.set('');
           this.removeImage();
-          this.isLoading.set(false);
           this.errorMessage.set('');
         },
         error: (err) => {
-          this.isLoading.set(false);
+          this.errorMessage.set('Failed to create post. Please try again.');
+          setTimeout(() => this.errorMessage.set(''), 3000);
         },
       });
+  }
+
+  onTextInput(event: Event): void {
+    const text = (event.target as HTMLTextAreaElement).value;
+    this.postText.set(text);
   }
 }

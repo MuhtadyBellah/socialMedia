@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,22 +24,30 @@ type TabType = 'feed' | 'myPosts' | 'community' | 'saved';
   imports: [FeedComponent, SuggestedComponent, CommonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements OnInit {
   private readonly postsService = inject(PostsService);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly posts = signal<PostData[]>([]);
-  readonly activeTab = signal<TabType>('feed');
-
   readonly currentUser = this.authService.currentUser;
 
+  readonly posts = signal<PostData[]>([]);
+  readonly activeTab = signal<TabType>('feed');
   readonly isLoading = signal(false);
   readonly hasError = signal(false);
   readonly errorMessage = signal('');
 
   readonly isEmpty = computed(() => !this.isLoading() && this.posts().length === 0);
+  readonly currentUserId = computed(() => this.currentUser()?._id);
+
+  readonly tabLoadingStates = signal<Record<TabType, boolean>>({
+    feed: false,
+    myPosts: false,
+    community: false,
+    saved: false,
+  });
 
   ngOnInit(): void {
     this.loadFeed();
@@ -39,15 +55,24 @@ export class HomeComponent implements OnInit {
 
   loadFeed(): void {
     if (this.isLoading()) return;
+
+    // Prevent duplicate requests for feed tab
+    const currentStates = this.tabLoadingStates();
+    if (currentStates.feed) return;
+
     this.activeTab.set('feed');
     this.hasError.set(false);
     this.isLoading.set(true);
+    this.tabLoadingStates.set({ ...currentStates, feed: true });
 
     this.postsService
       .getFeed()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false)),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.tabLoadingStates.update((states) => ({ ...states, feed: false }));
+        }),
       )
       .subscribe({
         next: (response: any) => {
@@ -65,22 +90,29 @@ export class HomeComponent implements OnInit {
   loadMyPosts(): void {
     if (this.isLoading()) return;
 
-    const user = this.currentUser();
-    if (!user?._id) {
+    const userId = this.currentUserId();
+    if (!userId) {
       this.hasError.set(true);
       this.errorMessage.set('User data not found. Please refresh the page.');
       return;
     }
 
+    const currentStates = this.tabLoadingStates();
+    if (currentStates.myPosts) return;
+
     this.activeTab.set('myPosts');
     this.hasError.set(false);
     this.isLoading.set(true);
+    this.tabLoadingStates.set({ ...currentStates, myPosts: true });
 
     this.authService
-      .getUserPosts(user._id)
+      .getUserPosts(userId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false)),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.tabLoadingStates.update((states) => ({ ...states, myPosts: false }));
+        }),
       )
       .subscribe({
         next: (response) => {
@@ -98,15 +130,22 @@ export class HomeComponent implements OnInit {
   loadALLPosts(): void {
     if (this.isLoading()) return;
 
+    const currentStates = this.tabLoadingStates();
+    if (currentStates.community) return;
+
     this.activeTab.set('community');
     this.hasError.set(false);
     this.isLoading.set(true);
+    this.tabLoadingStates.set({ ...currentStates, community: true });
 
     this.postsService
       .getAllPosts()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false)),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.tabLoadingStates.update((states) => ({ ...states, community: false }));
+        }),
       )
       .subscribe({
         next: (response: any) => {
@@ -124,15 +163,22 @@ export class HomeComponent implements OnInit {
   loadSavedPosts(): void {
     if (this.isLoading()) return;
 
+    const currentStates = this.tabLoadingStates();
+    if (currentStates.saved) return;
+
     this.activeTab.set('saved');
     this.hasError.set(false);
     this.isLoading.set(true);
+    this.tabLoadingStates.set({ ...currentStates, saved: true });
 
     this.authService
       .getBookmarks()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false)),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.tabLoadingStates.update((states) => ({ ...states, saved: false }));
+        }),
       )
       .subscribe({
         next: (response: any) => {

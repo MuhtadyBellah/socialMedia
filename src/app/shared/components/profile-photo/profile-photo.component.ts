@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-profile-photo',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './profile-photo.component.html',
-  styleUrl: './profile-photo.component.css',
+  styleUrls: ['./profile-photo.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePhotoComponent {
   @Input({ required: true }) name!: string;
